@@ -1,5 +1,15 @@
+import Frames.MainFrame;
+
 public class Main {
+
+    public static MainFrame mainFrame;
+
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        newMainFrame();
+        mainFrame.setVisible(true);
+    }
+
+    public static void newMainFrame() {
+        mainFrame = new MainFrame();
     }
 }
