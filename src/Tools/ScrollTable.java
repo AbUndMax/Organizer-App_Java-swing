@@ -7,15 +7,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
-/*
-Goals:
-Visualize in ScrollPane
-Allow to add entrys
-provide save/open functionality
-search
-
- */
-
 public class ScrollTable extends JPanel {
 
     private String[] colNames;
@@ -30,13 +21,12 @@ public class ScrollTable extends JPanel {
     public ScrollTable(String[] colNames, ArrayList<String[]> tableContent) {
         this.colNames = colNames;
         this.tableContent = tableContent;
-        searchBar.getDocument().addDocumentListener(new SearchBarList());
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         setupSearchBar();
 
-        setupScrollTextArea();
+        setupScrollableTable();
 
         add(Box.createVerticalStrut(10));
         add(searchBarPane);
@@ -60,14 +50,18 @@ public class ScrollTable extends JPanel {
         searchBarPane.add(Box.createHorizontalStrut(10));
         searchBarPane.add(columnChooser);
 
+        searchBar.getDocument().addDocumentListener(new SearchBarList());
+
         searchBarPane.setMaximumSize(new Dimension(searchBarPane.getMaximumSize().width, searchBarPane.getMinimumSize().height));
     }
 
-    private void setupScrollTextArea() {
+    private void setupScrollableTable() {
 
         for (String name : colNames) {
             tableModel.addColumn(name);
         }
+
+        actualizeTable(tableContent);
 
         table.setModel(tableModel);
 

@@ -10,14 +10,14 @@ import java.util.ArrayList;
 
 public class PhoneBook extends JPanel {
 
-    private static final String[] colNames = {"name", "surname", "phone-number"};
-    private static ArrayList<String[]> entryList = new ArrayList<>();
-    private static final ScrollTable scrollTable = new ScrollTable(colNames, entryList);
+    private static final String[] phoneBookColNames = {"name", "surname", "phone-number"};
+    private static ArrayList<String[]> phoneBookEntries = new ArrayList<>();
+    private static final ScrollTable phoneBookScrollTable = new ScrollTable(phoneBookColNames, phoneBookEntries);
 
     public PhoneBook() {
         setLayout(new BorderLayout());
 
-        add(scrollTable, BorderLayout.CENTER);
+        add(phoneBookScrollTable, BorderLayout.CENTER);
 
         // Load default file into the table
         loadDefaultPhoneBookTable();
@@ -36,7 +36,7 @@ public class PhoneBook extends JPanel {
                 // Splitting the line into name, surname and number
                 String[] lineArray = line.split(",\\s|\\s");
 
-                entryList.add(lineArray);
+                phoneBookEntries.add(lineArray);
 
             } while ((line = bufferedIN.readLine()) != null);
         }
@@ -48,18 +48,19 @@ public class PhoneBook extends JPanel {
     // opens the default PhoneBookFile
     private void loadDefaultPhoneBookTable(){
         createPhoneBookEntries("Files/PhoneBookFiles/phone_book_default.txt");
+        phoneBookScrollTable.actualizeTable(phoneBookEntries);
     }
 
     // opens FileChooser and lets user select a file
     public void loadUserPhoneBookFile(String filePath){
 
         // delete current table entries
-        entryList.clear();
+        phoneBookEntries.clear();
 
         // load new file
         createPhoneBookEntries(filePath);
 
         // actualize table
-        scrollTable.actualizeTable(entryList);
+        phoneBookScrollTable.actualizeTable(phoneBookEntries);
     }
 }
