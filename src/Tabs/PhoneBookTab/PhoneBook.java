@@ -5,14 +5,17 @@ import Tools.ScrollTable;
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 public class PhoneBook extends JPanel {
 
     private static final String[] phoneBookColNames = {"name", "surname", "phone-number"};
     private static ArrayList<String[]> phoneBookEntries = new ArrayList<>();
-    private static final ScrollTable phoneBookScrollTable = new ScrollTable(phoneBookColNames, phoneBookEntries);
+    private static final ScrollTable phoneBookScrollTable = new ScrollTable(phoneBookColNames, phoneBookEntries, () -> saveToFile());
+    private static String currentFilePath;
 
     public PhoneBook() {
         setLayout(new BorderLayout());
@@ -47,7 +50,8 @@ public class PhoneBook extends JPanel {
 
     // opens the default PhoneBookFile
     private void loadDefaultPhoneBookTable(){
-        createPhoneBookEntries("Files/PhoneBookFiles/phone_book_default.txt");
+        currentFilePath = "Files/PhoneBookFiles/phone_book_default.txt";
+        createPhoneBookEntries(currentFilePath);
         phoneBookScrollTable.actualizeTable(phoneBookEntries);
     }
 
@@ -62,5 +66,19 @@ public class PhoneBook extends JPanel {
 
         // actualize table
         phoneBookScrollTable.actualizeTable(phoneBookEntries);
+    }
+
+    private static void saveToFile() {
+        try (BufferedWriter bufferedOUT = new BufferedWriter(new FileWriter(currentFilePath, false))) {
+
+            // Writing each entry in the HashMap to the file
+            for (String[] array : phoneBookEntries) {
+                bufferedOUT.write(array[0] + " " + array[1] + ", " + array[2] + "\n");
+            }
+        }
+
+        catch (Exception xptn){
+            System.out.println(xptn);
+        }
     }
 }

@@ -3,9 +3,16 @@ package Tools;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class ScrollTable extends JPanel {
 
@@ -17,10 +24,12 @@ public class ScrollTable extends JPanel {
     private final JTable table = new JTable();
     private final JScrollPane scrollPane = new JScrollPane();
     private ArrayList<String[]> tableContent;
+    private Runnable writeToFileFunction;
 
-    public ScrollTable(String[] colNames, ArrayList<String[]> tableContent) {
+    public ScrollTable(String[] colNames, ArrayList<String[]> tableContent, Runnable writeToFileFunction) {
         this.colNames = colNames;
         this.tableContent = tableContent;
+        this.writeToFileFunction = writeToFileFunction;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -32,6 +41,9 @@ public class ScrollTable extends JPanel {
         add(searchBarPane);
         add(Box.createVerticalStrut(10));
         add(scrollPane);
+
+
+
     }
 
     private void setupSearchBar() {
@@ -61,11 +73,11 @@ public class ScrollTable extends JPanel {
             tableModel.addColumn(name);
         }
 
-        actualizeTable(tableContent);
-
         table.setModel(tableModel);
+        table.getModel().addTableModelListener(new tableListener());
 
         scrollPane.setViewportView(table);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
 
     // input searchPattern -> output matching entries
@@ -92,6 +104,7 @@ public class ScrollTable extends JPanel {
         for (String[] array : tableContent){
             tableModel.addRow(array);
         }
+
     }
 
     private void reactToSearchBar(){
@@ -107,6 +120,54 @@ public class ScrollTable extends JPanel {
         }
         public void insertUpdate(DocumentEvent e) {
             reactToSearchBar();
+        }
+    }
+
+    class tableListener implements TableModelListener{
+        public void tableChanged(TableModelEvent e) {
+            int row = e.getFirstRow();
+            int column = e.getColumn();
+
+            if (e.getType() == TableModelEvent.UPDATE) {
+                TableModel model = (TableModel)e.getSource();
+                String columnName = model.getColumnName(column);
+                Object data = model.getValueAt(row, column);
+
+                String[] newRow = tableContent.get(row);
+                newRow[column] = data.toString();
+
+                tableContent.set(row, newRow);
+
+                /* Debugging Line
+                for (String[] array : tableContent){
+                    System.out.println(Arrays.toString(array));
+                }
+
+                System.out.println("Row: " + row + " Column: " + column);
+                System.out.println("Column Name: " + columnName);
+                System.out.println("Data: " + data);
+                */
+
+
+                // Änderungen an der Tabelle werden direkt gespeichert !!!!
+                writeToFileFunction.run();
+            }
+        }
+    }
+
+
+    // finds the minimum column size for each column based on the textsizes in each row
+    public void actualizeColSize() {
+        for (int column = 0; column < table.getColumnCount(); column++) {
+            TableColumn tableColumn = table.getColumnModel().getColumn(column);
+            int preferredWidth = tableColumn.getMinWidth();
+            for (int row = 0; row < table.getRowCount(); row++) {
+                TableCellRenderer cellRenderer = table.getCellRenderer(row, column);
+                Component c = table.prepareRenderer(cellRenderer, row, column);
+                int width = c.getPreferredSize().width + table.getIntercellSpacing().width;
+                preferredWidth = Math.max(preferredWidth, width);
+            }
+            tableColumn.setMinWidth(preferredWidth + 20);
         }
     }
 }
