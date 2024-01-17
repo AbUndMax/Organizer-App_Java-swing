@@ -1,4 +1,4 @@
-package Tabs.SchedulerTab;
+package Organizer.Tabs.SchedulerTab;
 
 import javax.swing.*;
 

@@ -1,6 +1,7 @@
-package Tabs.AddressBookTab;
+package Organizer.Tabs.AddressBookTab;
 
-import Tools.ScrollTable;
+import Organizer.Main;
+import Organizer.Tools.ScrollTable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +15,8 @@ public class AddressBook extends JPanel {
     private static final String[] colNamesAddresses = {"name", "street & number", "city", "postal-code", "country"};
     //private static final ScrollTable scrollTable = new ScrollTable(colNames);
     private static ArrayList<String[]> AddressEntries = new ArrayList<>();
-    private static final ScrollTable AddressScrollTable = new ScrollTable(colNamesAddresses, AddressEntries, () -> saveToFile());
     private static String currentFilePath;
+    private static final ScrollTable AddressScrollTable = new ScrollTable(colNamesAddresses, AddressEntries, () -> saveToFile(currentFilePath));
 
     public AddressBook() {
         setLayout(new BorderLayout());
@@ -28,7 +29,7 @@ public class AddressBook extends JPanel {
     }
 
     // gets file -> loads Data into system i.e. instantiates PhoneBook Objects
-    private void createAddressBookEntry(String phoneBookFilePath) {
+    private static void createAddressBookEntry(String phoneBookFilePath) {
         // File Structure: name surname, number
 
         try (BufferedReader bufferedIN = new BufferedReader(new FileReader(phoneBookFilePath));) {
@@ -46,6 +47,7 @@ public class AddressBook extends JPanel {
         }
         catch(Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(Main.mainFrame, "Error: File not Compatible", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -58,7 +60,7 @@ public class AddressBook extends JPanel {
     }
 
     // opens FileChooser and lets user select a file
-    public void loadUserAddressBookFile(String filePath){
+    public static void loadUserAddressBookFile(String filePath){
 
         currentFilePath = filePath;
 
@@ -72,8 +74,8 @@ public class AddressBook extends JPanel {
         AddressScrollTable.actualizeTable(AddressEntries);
     }
 
-    private static void saveToFile() {
-        try (BufferedWriter bufferedOUT = new BufferedWriter(new FileWriter(currentFilePath, false))) {
+    public static void saveToFile(String filePath) {
+        try (BufferedWriter bufferedOUT = new BufferedWriter(new FileWriter(filePath, false))) {
 
             // Writing each entry in the HashMap to the file
             for (String[] array : AddressEntries) {

@@ -1,4 +1,4 @@
-package Tools;
+package Organizer.Tools;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -11,8 +11,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ScrollTable extends JPanel {
 
@@ -84,9 +84,11 @@ public class ScrollTable extends JPanel {
     public ArrayList<String[]> searchTable(String searchPattern, int columnToSearch) {
 
         ArrayList<String[]> searchedTableContent = new ArrayList<>();
+        Pattern compiledPattern = Pattern.compile(searchPattern, Pattern.CASE_INSENSITIVE);
 
         for (String[] array : tableContent) {
-            if (array[columnToSearch].contains(searchPattern)) {
+            Matcher matcher = compiledPattern.matcher(array[columnToSearch]);
+            if (matcher.find()) {
                 searchedTableContent.add(array);
             }
         }

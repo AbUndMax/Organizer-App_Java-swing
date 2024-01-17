@@ -1,9 +1,10 @@
-package Frames;
+package Organizer.Frames;
 
-import Tabs.AddressBookTab.AddressBook;
-import Tabs.NoteBookTab.NoteBook;
-import Tabs.PhoneBookTab.PhoneBook;
-import Tabs.SchedulerTab.Scheduler;
+import Organizer.Tabs.AddressBookTab.AddressBook;
+import Organizer.Tabs.NoteBookTab.NoteBook;
+import Organizer.Tabs.PhoneBookTab.PhoneBook;
+import Organizer.Tabs.SchedulerTab.Scheduler;
+import Organizer.Tools.MenuBarListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +15,13 @@ public class MainFrame extends JFrame {
 
     private static final PhoneBook phoneBookPane = new PhoneBook();
     private static final AddressBook addressBookPane = new AddressBook();
-    private static final NoteBook noteBookPane = new NoteBook();
+    public static final NoteBook noteBookPane = new NoteBook();
     private static final Scheduler schedulerPane = new Scheduler();
+    private static final JMenuBar menuBar = new JMenuBar();
+    private static final JMenu IOMenu = new JMenu("menu");
+    private static final JMenuItem menuImport = new JMenuItem("import");
+    private static final JMenuItem menuExport = new JMenuItem("export");
+    private static final MenuBarListener menuBarListener = new MenuBarListener();
 
     public MainFrame(){
         setTitle("Organizer");
@@ -24,6 +30,16 @@ public class MainFrame extends JFrame {
         setMinimumSize(new Dimension(300, 400));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        menuImport.addActionListener(menuBarListener);
+        menuImport.setActionCommand("Import");
+        menuExport.addActionListener(menuBarListener);
+        menuExport.setActionCommand("Export");
+
+        IOMenu.add(menuImport);
+        IOMenu.add(menuExport);
+        menuBar.add(IOMenu);
+        setJMenuBar(menuBar);
 
         add(Box.createVerticalStrut(5));
 
@@ -35,4 +51,5 @@ public class MainFrame extends JFrame {
         add(organizerTabs);
 
     }
+
 }

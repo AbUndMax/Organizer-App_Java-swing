@@ -1,4 +1,6 @@
-import Frames.MainFrame;
+package Organizer;
+
+import Organizer.Frames.MainFrame;
 
 public class Main {
 
