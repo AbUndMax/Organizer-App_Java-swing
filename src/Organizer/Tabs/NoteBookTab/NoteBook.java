@@ -1,6 +1,7 @@
 package Organizer.Tabs.NoteBookTab;
 
 import Organizer.Frames.MainFrame;
+import Organizer.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -112,13 +113,15 @@ public class NoteBook extends JSplitPane {
 
     public static void importFile(String filePath) {
         Path sourcePath = Paths.get(filePath);
-        Path targetPath = Paths.get("Files/NoteBookFiles");
+        Path targetPath = Paths.get("Files/NoteBookFiles/" + sourcePath.getFileName());
 
         try {
             Files.copy(sourcePath, targetPath);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        MainFrame.noteBookPane.actualizeList();
     }
 
     public static void exportFile(String filePath) {
