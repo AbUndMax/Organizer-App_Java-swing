@@ -42,15 +42,7 @@ public class NoteBook extends JSplitPane {
 
     private void setupList(){
 
-        File folder = new File("Files/NoteBookFiles");
-        File[] listOfFiles = folder.listFiles();
-        if (listOfFiles != null) {
-            for (File file : listOfFiles) {
-                if (file.isFile()) {
-                    listModel.addElement(file.getName());
-                }
-            }
-        }
+        fillListWIthFiles();
 
         list.setModel(listModel);
         listScrollPane.setViewportView(list);
@@ -77,13 +69,7 @@ public class NoteBook extends JSplitPane {
 
     }
 
-    private void setupTextArea() {
-        textScrollPane.setViewportView(textArea);
-    }
-
-    public void actualizeList(){
-
-        listModel.clear();
+    private void fillListWIthFiles() {
         File folder = new File("Files/NoteBookFiles");
         File[] listOfFiles = folder.listFiles();
         if (listOfFiles != null) {
@@ -93,6 +79,16 @@ public class NoteBook extends JSplitPane {
                 }
             }
         }
+    }
+
+    public void actualizeList(){
+
+        listModel.clear();
+        fillListWIthFiles();
+    }
+
+    private void setupTextArea() {
+        textScrollPane.setViewportView(textArea);
     }
 
     public List<String> getAreaContent() {

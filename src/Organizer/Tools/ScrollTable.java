@@ -41,9 +41,6 @@ public class ScrollTable extends JPanel {
         add(searchBarPane);
         add(Box.createVerticalStrut(10));
         add(scrollPane);
-
-
-
     }
 
     private void setupSearchBar() {
@@ -74,7 +71,7 @@ public class ScrollTable extends JPanel {
         }
 
         table.setModel(tableModel);
-        table.getModel().addTableModelListener(new tableListener());
+        table.getModel().addTableModelListener(new TableListener());
 
         scrollPane.setViewportView(table);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -125,7 +122,8 @@ public class ScrollTable extends JPanel {
         }
     }
 
-    class tableListener implements TableModelListener{
+    // listens to changes inside the table, and saves these changes immediately to the file.
+    class TableListener implements TableModelListener{
         public void tableChanged(TableModelEvent e) {
             int row = e.getFirstRow();
             int column = e.getColumn();

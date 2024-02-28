@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 public class AddressBook extends JPanel {
     private static final String[] colNamesAddresses = {"name", "street & number", "city", "postal-code", "country"};
-    //private static final ScrollTable scrollTable = new ScrollTable(colNames);
     private static ArrayList<String[]> AddressEntries = new ArrayList<>();
     private static String currentFilePath;
     private static final ScrollTable AddressScrollTable = new ScrollTable(colNamesAddresses, AddressEntries, () -> saveToFile(currentFilePath));
