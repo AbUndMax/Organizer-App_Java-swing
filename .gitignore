@@ -31,4 +31,4 @@ bin/
 .DS_Store
 
 ### Cpde ###
-TestScheduler.java
+src/Organizer/Tabs/SchedulerTab/TestScheduler.java
