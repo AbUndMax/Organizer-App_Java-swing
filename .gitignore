@@ -30,5 +30,6 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-### Cpde ###
+### Code-Files ###
 src/Organizer/Tabs/SchedulerTab/TestScheduler.java
+src/Organizer/Tabs/SchedulerTab/AppointmentTest.java
