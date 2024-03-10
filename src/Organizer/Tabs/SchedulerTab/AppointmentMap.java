@@ -1,5 +1,6 @@
 package Organizer.Tabs.SchedulerTab;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.Comparator;
@@ -15,8 +16,11 @@ public class AppointmentMap {
      */
     private final HashMap<Year, TreeSet<Appointment>[][]> AppointmentMap = new HashMap<>();
 
-    public void addAppointment(Year year, Month month, Integer dayValue, Appointment appointment) {
+    public void addAppointment(LocalDate date, Appointment appointment) {
 
+        Year year = Year.of(date.getYear());
+        Month month = Month.of(date.getMonth().getValue());
+        Integer dayValue = date.getDayOfMonth();
         int monthIndex = month.getValue() - 1;
         int dayIndex = dayValue - 1;
 
