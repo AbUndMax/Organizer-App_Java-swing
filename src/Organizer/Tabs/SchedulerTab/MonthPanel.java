@@ -22,8 +22,6 @@ public class MonthPanel extends JPanel {
         currentMonth = month;
         appointmentsOfThisMonth = appointments;
 
-        System.out.println(Arrays.toString(appointments));
-
         setBackground(Color.WHITE);
         setLayout(new GridBagLayout());
 
