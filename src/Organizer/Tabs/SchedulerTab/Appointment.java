@@ -20,7 +20,7 @@ public class Appointment {
 
     private Repetition repetition;
 
-    private int timesOfRepetition;
+    private int numberOfRepetition;
 
     // description provided by the user for the appointment
     private String description;
@@ -76,12 +76,12 @@ public class Appointment {
         this.repetition = repetition;
     }
 
-    public int getTimesOfRepetition() {
-        return timesOfRepetition;
+    public int getNumberOfRepetition() {
+        return numberOfRepetition;
     }
 
-    public void setTimesOfRepetition(int timesOfRepetition) {
-        this.timesOfRepetition = timesOfRepetition;
+    public void setNumberOfRepetition(int numberOfRepetition) {
+        this.numberOfRepetition = numberOfRepetition;
     }
 
     public String getDescription() {
