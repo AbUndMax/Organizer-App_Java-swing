@@ -31,5 +31,4 @@ bin/
 .DS_Store
 
 ### Code-Files ###
-src/Organizer/Tabs/SchedulerTab/Tests/TestScheduler.java
-src/Organizer/Tabs/SchedulerTab/Tests/AppointmentTest.java
+src/Organizer/Tabs/SchedulerTab/Tests/
