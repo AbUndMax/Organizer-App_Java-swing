@@ -65,6 +65,8 @@ public class AppointmentMap {
 
     public TreeSet<Appointment>[] getAppointmentsOfMonth(Year year, Month month) {
         int monthIndex = month.getValue() - 1;
-        return AppointmentMap.get(year)[monthIndex];
+
+        if (AppointmentMap.containsKey(year)) return AppointmentMap.get(year)[monthIndex];
+        else return null;
     }
 }
