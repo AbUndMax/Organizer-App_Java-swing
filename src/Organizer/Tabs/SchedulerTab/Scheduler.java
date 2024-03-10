@@ -5,10 +5,15 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.util.Arrays;
+import java.util.TreeSet;
 
 public class Scheduler extends JSplitPane {
 
-    private static LocalDate currentDate = LocalDate.now();
+    private final LocalDate currentDate = LocalDate.now();
+    private final AppointmentIO appointmentIO = new AppointmentIO();
+    private final AppointmentMap appointmentMap = appointmentIO.getAppointmentMapInstance();
+
     public Scheduler() {
         setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 
@@ -58,16 +63,21 @@ public class Scheduler extends JSplitPane {
         //TODO: add calendar control listeners
 
         // JComboBox to choose easily between years and months
-        int currentYear = currentDate.getYear();
-        int currentMonth = currentDate.getMonthValue();
+        Year currentYear = Year.of(currentDate.getYear());
+        Month currentMonth = Month.of(currentDate.getMonthValue());
         JComboBox yearChooser = new JComboBox();
+        // calendar will always start with 1999
+        Year i = Year.of(1999);
         // there will be always +30 years from the year the application gets opened
-        for (int i = 1999; i <= currentYear + 30; i++) yearChooser.addItem(i);
+        while (i.getValue() != currentYear.plusYears(30).getValue()) {
+            yearChooser.addItem(i);
+            i = i.plusYears(1);
+        }
         JComboBox monthChooser = new JComboBox();
         for (Month month : Month.values()) monthChooser.addItem(month);
         // set current month and year as selected
-        yearChooser.setSelectedIndex(currentYear - 1999);
-        monthChooser.setSelectedIndex(currentMonth - 1);
+        yearChooser.setSelectedItem(currentYear);
+        monthChooser.setSelectedItem(currentMonth);
 
         //add the control elements to the Panel
         calendarButtonPane.add(Box.createHorizontalStrut(5));
@@ -83,7 +93,10 @@ public class Scheduler extends JSplitPane {
 
         // Calendar:
         //TODO: add Calendar to rightSpacePane
-        MonthPanel monthPanel = new MonthPanel(Year.of(currentDate.getYear()), currentDate.getMonth());
+        Year yearToCreate = (Year) yearChooser.getSelectedItem();
+        Month monthToCreate = (Month) monthChooser.getSelectedItem();
+        TreeSet<Appointment>[] appointmentsOfThisMonth = appointmentMap.getAppointmentsOfMonth(yearToCreate, monthToCreate);
+        MonthPanel monthPanel = new MonthPanel(yearToCreate, monthToCreate, appointmentsOfThisMonth);
 
         rightSpacePane.add(calendarButtonPane, BorderLayout.NORTH);
         rightSpacePane.add(monthPanel, BorderLayout.CENTER);
