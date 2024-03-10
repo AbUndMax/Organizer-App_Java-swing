@@ -31,3 +31,4 @@ bin/
 .DS_Store
 
 ### Code-Files ###
+src/Organizer/Tabs/SchedulerTab/Test/
