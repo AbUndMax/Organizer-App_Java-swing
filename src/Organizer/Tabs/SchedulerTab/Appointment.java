@@ -18,6 +18,10 @@ public class Appointment {
 
     private LocalTime endTime;
 
+    private Repetition repetition;
+
+    private int timesOfRepetition;
+
     // description provided by the user for the appointment
     private String description;
 
@@ -62,6 +66,22 @@ public class Appointment {
 
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
+    }
+
+    public Repetition getRepetition() {
+        return repetition;
+    }
+
+    public void setRepetition(Repetition repetition) {
+        this.repetition = repetition;
+    }
+
+    public int getTimesOfRepetition() {
+        return timesOfRepetition;
+    }
+
+    public void setTimesOfRepetition(int timesOfRepetition) {
+        this.timesOfRepetition = timesOfRepetition;
     }
 
     public String getDescription() {
