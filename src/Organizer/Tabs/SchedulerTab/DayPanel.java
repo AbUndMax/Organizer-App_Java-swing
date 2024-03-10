@@ -5,21 +5,24 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.time.LocalDate;
+import java.util.TreeSet;
 
 public class DayPanel extends JPanel {
 
     private LocalDate dateOfDay;
+    private TreeSet<Appointment> appointmentsOfTheDay;
 
-    public DayPanel(LocalDate date) {
+    public DayPanel(LocalDate date, TreeSet<Appointment> appointments) {
 
         dateOfDay = date;
+        appointmentsOfTheDay = appointments;
 
         setBackground(Color.WHITE);
         setBorder(LineBorder.createBlackLineBorder());
         setLayout(new BorderLayout());
 
         add(dateOfDayLabel(), BorderLayout.NORTH);
-
+        add(appointmentPane(), BorderLayout.CENTER);
     }
 
     private JLabel dateOfDayLabel() {
@@ -35,10 +38,26 @@ public class DayPanel extends JPanel {
         return dateOfDayLabel;
     }
 
-    private JScrollPane appointmentsOfDay() {
+    private JScrollPane appointmentPane() {
+        // This scrollPane contains a List with all Appointments of the day
         JScrollPane appointmentScrollPane = new JScrollPane();
-        JPanel appointmentButtonPane = new JPanel();
+        appointmentScrollPane.setBorder(null);
 
+        JList list = new JList<>();
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+
+        // add all Appointments to the listModel
+        if (appointmentsOfTheDay != null) {
+            for (Appointment appointment : appointmentsOfTheDay) {
+                listModel.addElement(appointment.getTitle());
+            }
+        }
+
+        list.setModel(listModel);
+
+        appointmentScrollPane.setViewportView(list);
+
+        appointmentScrollPane.setPreferredSize(new Dimension(10, appointmentScrollPane.getHeight()));
 
         return appointmentScrollPane;
     }
