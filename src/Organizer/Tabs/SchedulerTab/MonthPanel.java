@@ -7,16 +7,22 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.util.Arrays;
+import java.util.TreeSet;
 
 public class MonthPanel extends JPanel {
 
-    Year currentYear;
-    Month currentMonth;
+    private Year currentYear;
+    private Month currentMonth;
+    private TreeSet<Appointment>[] appointmentsOfThisMonth;
 
-    public MonthPanel(Year year, Month month) {
+    public MonthPanel(Year year, Month month, TreeSet<Appointment>[] appointments) {
 
         currentYear = year;
         currentMonth = month;
+        appointmentsOfThisMonth = appointments;
+
+        System.out.println(Arrays.toString(appointments));
 
         setBackground(Color.WHITE);
         setLayout(new GridBagLayout());
@@ -50,7 +56,13 @@ public class MonthPanel extends JPanel {
             if (x % 7 == 0) y++;
             gbc.gridy = y;
             gbc.gridx = x % 7;
-            DayPanel day = new DayPanel(firstDayOfMonth.plusDays(daysToAdd++));
+            // we have to increment daysToAdd and use it then again, because appointmentsOfThisMonth is actually
+            // using the real day value (first day in month is 1, second is 2 and so on).
+            // AppointmentMap is handling the correct indexing
+            TreeSet<Appointment> appointmentSet;
+            if (appointmentsOfThisMonth == null) appointmentSet = null;
+            else appointmentSet = appointmentsOfThisMonth[daysToAdd];
+            DayPanel day = new DayPanel(firstDayOfMonth.plusDays(daysToAdd++), appointmentSet);
             add(day, gbc);
         }
 
