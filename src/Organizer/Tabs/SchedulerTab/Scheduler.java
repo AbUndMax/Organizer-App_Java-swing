@@ -12,8 +12,8 @@ public class Scheduler extends JSplitPane {
     private final LocalDate currentDate = LocalDate.now();
     private final AppointmentIO appointmentIO = new AppointmentIO();
     private final AppointmentCollection appointmentCollection = appointmentIO.getAppointmentMapInstance();
-    private final JComboBox yearChooser = new JComboBox();
-    private final JComboBox monthChooser = new JComboBox();
+    private final JComboBox<Year> yearChooser = new JComboBox();
+    private final JComboBox<Month> monthChooser = new JComboBox();
 
     public Scheduler() {
         setOrientation(JSplitPane.HORIZONTAL_SPLIT);
@@ -38,8 +38,8 @@ public class Scheduler extends JSplitPane {
     //Appointment List-view Panel:
     private JScrollPane appointmentListViewPane() {
         // setup the Appointment overview (by using a modified JTree embedded in JScrollPane
-        JScrollPane scrollTree = new JScrollPane();
-        //TODO: add JTree into JScrollPane
+        AppointmentScrollableTree scrollTree = new AppointmentScrollableTree(appointmentCollection);
+        scrollTree.setPreferredSize(new Dimension(200, scrollTree.getHeight()));
 
         return scrollTree;
     }
