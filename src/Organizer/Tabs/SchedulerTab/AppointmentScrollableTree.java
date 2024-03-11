@@ -7,7 +7,7 @@ import java.time.Year;
 import java.util.HashMap;
 import java.util.TreeSet;
 
-public class AppointmentTree extends JScrollPane {
+public class AppointmentScrollableTree extends JScrollPane {
 
     private AppointmentCollection appointmentCollection;
     private HashMap<Year, TreeSet<Appointment>[][]> appointmentMap;
@@ -16,7 +16,7 @@ public class AppointmentTree extends JScrollPane {
     private final DefaultTreeModel treeModel = new DefaultTreeModel(root);
     private final JTree tree = new JTree(treeModel);
 
-    public AppointmentTree(AppointmentCollection appointmentCollection) {
+    public AppointmentScrollableTree(AppointmentCollection appointmentCollection) {
         this.appointmentCollection = appointmentCollection;
         this.appointmentMap = appointmentCollection.getAppointmentMap();
 
@@ -47,7 +47,8 @@ public class AppointmentTree extends JScrollPane {
                     Integer dayValue = d + 1;
                     // if day doesn't have any appointments skip
                     if (appointmentCollection.dayHasAppointments(year, month, dayValue)) continue;
-                    DefaultMutableTreeNode dayNode = new DefaultMutableTreeNode(dayValue);
+                    String dayName = month.toString().substring(0, 3).toLowerCase() + " " + dayValue + ".";
+                    DefaultMutableTreeNode dayNode = new DefaultMutableTreeNode(dayName);
                     monthNode.add(dayNode);
 
                     for (Appointment appointment : appointmentMap.get(year)[m][d]) {
