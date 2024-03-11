@@ -11,7 +11,7 @@ public class Scheduler extends JSplitPane {
 
     private final LocalDate currentDate = LocalDate.now();
     private final AppointmentIO appointmentIO = new AppointmentIO();
-    private final AppointmentMap appointmentMap = appointmentIO.getAppointmentMapInstance();
+    private final AppointmentCollection appointmentCollection = appointmentIO.getAppointmentMapInstance();
     private final JComboBox yearChooser = new JComboBox();
     private final JComboBox monthChooser = new JComboBox();
 
@@ -118,8 +118,8 @@ public class Scheduler extends JSplitPane {
     private JPanel calendarPane() {
         Year yearToCreate = (Year) yearChooser.getSelectedItem();
         Month monthToCreate = (Month) monthChooser.getSelectedItem();
-        TreeSet<Appointment>[] appointmentsOfThisMonth = appointmentMap.getAppointmentsOfMonth(yearToCreate,
-                                                                                               monthToCreate);
+        TreeSet<Appointment>[] appointmentsOfThisMonth = appointmentCollection.getAppointmentsOfMonth(yearToCreate,
+                                                                                                      monthToCreate);
 
         return (new MonthPanel(yearToCreate, monthToCreate, appointmentsOfThisMonth));
     }
