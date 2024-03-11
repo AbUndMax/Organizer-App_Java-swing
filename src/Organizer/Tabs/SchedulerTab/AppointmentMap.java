@@ -24,43 +24,29 @@ public class AppointmentMap {
         int monthIndex = month.getValue() - 1;
         int dayIndex = dayValue - 1;
 
-        // if appointment is part of a year already existing in the Map, check if month already has appointments
-        if (AppointmentMap.containsKey(year)) {
-
-            // if month already has appointments, check if day already has appointments
-            if (AppointmentMap.get(year)[monthIndex] != null) {
-
-                // if day has already appointments (i.e. has a TreeSet), add appointment to the TreeSet
-                if (AppointmentMap.get(year)[monthIndex][dayIndex] != null) {
-                    AppointmentMap.get(year)[monthIndex][dayIndex].add(appointment);
-
-                }// if day has no appointments:
-                else {// make a new TreeSet and place it accordingly into the matrix
-                    TreeSet<Appointment> appointments = new TreeSet<>(Comparator.comparing(Appointment::getStartTime));
-                    appointments.add(appointment);
-                    AppointmentMap.get(year)[monthIndex][dayIndex] = appointments;
-                }
-
-            }// if month doesn't have any appointments:
-            else { //make a new TreeSet array and add it to the Month
-                TreeSet<Appointment> appointments = new TreeSet<>(Comparator.comparing(Appointment::getStartTime));
-                TreeSet<Appointment>[] treeSetArray = new TreeSet[month.length(year.isLeap())];
-
-                appointments.add(appointment);
-                treeSetArray[dayIndex] = appointments;
-
-                AppointmentMap.get(year)[monthIndex] = treeSetArray;
-            }
-
-        }// if the year doesn't exist in the map:
-        else { //make a new matrix in the form of [months][days] add a new TreeSet with appointment
+        // if the year-key doesn't exist, make a completly new year and TreeSet<Appointment>[month][day] matrix
+        if (!AppointmentMap.containsKey(year)) {
             TreeSet<Appointment> appointments = new TreeSet<>(Comparator.comparing(Appointment::getStartTime));
             TreeSet<Appointment>[][] AppointmentMatrix = new TreeSet[12][month.length(year.isLeap())];
 
-            appointments.add(appointment);
             AppointmentMatrix[monthIndex][dayIndex] = appointments;
             AppointmentMap.put(year, AppointmentMatrix);
         }
+        // if the year exists, but the month is null, make a new TreeSet<Appointment>[day] array for this month
+        else if (AppointmentMap.get(year)[monthIndex] == null) {
+            TreeSet<Appointment> appointments = new TreeSet<>(Comparator.comparing(Appointment::getStartTime));
+            TreeSet<Appointment>[] treeSetArray = new TreeSet[month.length(year.isLeap())];
+
+            treeSetArray[dayIndex] = appointments;
+            AppointmentMap.get(year)[monthIndex] = treeSetArray;
+        }
+        // if year and month exist and only the day is null, make a new TreeSet<Appointment>
+        else if (AppointmentMap.get(year)[monthIndex][dayIndex] == null) {
+            TreeSet<Appointment> appointments = new TreeSet<>(Comparator.comparing(Appointment::getStartTime));
+            AppointmentMap.get(year)[monthIndex][dayIndex] = appointments;
+        }
+        // finally year, month and day exist (i.e. TreeSet<Appointment>[month][day]), add the appointment
+        AppointmentMap.get(year)[monthIndex][dayIndex].add(appointment);
     }
 
     public HashMap<Year, TreeSet<Appointment>[][]> getAppointmentMap() {
