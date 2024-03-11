@@ -60,4 +60,22 @@ public class AppointmentCollection {
         else return null;
     }
 
+    // checks if a given month has any appointments
+    public boolean monthHasAppointments(Year year, Month month) {
+        TreeSet<Appointment>[] monthArray = getAppointmentsOfMonth(year, month);
+
+        for (TreeSet<Appointment> day : monthArray) {
+            if (day != null) return true;
+        }
+
+        return false;
+    }
+
+    // checks if a given day has any appointments
+    public boolean dayHasAppointments(Year year, Month month, int dayValue) {
+        int dayIndex = dayValue - 1;
+        TreeSet<Appointment>[] monthArray = getAppointmentsOfMonth(year, month);
+
+        return (monthArray[dayIndex] == null);
+    }
 }
