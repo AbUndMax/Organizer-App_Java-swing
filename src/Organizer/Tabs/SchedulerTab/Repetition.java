@@ -12,6 +12,18 @@ public enum Repetition {
         return (this != NONE);
     }
 
+    public boolean isDaily() {
+        return (this == DAILY);
+    }
+
+    public boolean isWeekly() {
+        return (this == WEEKLY);
+    }
+
+    public boolean isYearly() {
+        return (this == YEARLY);
+    }
+
     public static Repetition repetitionOf(String string) {
         switch (string) {
             case "NONE":
