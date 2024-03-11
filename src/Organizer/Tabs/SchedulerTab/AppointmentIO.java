@@ -3,16 +3,15 @@ package Organizer.Tabs.SchedulerTab;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Year;
+import java.util.TreeSet;
 
 public class AppointmentIO {
 
-    private Path pathToAppointmentFolder = Paths.get("Files/SchedulerFiles");
-    private AppointmentMap appointmentMap = new AppointmentMap();
+    private final String pathToAppointmentFolder = "Files/SchedulerFiles";
+    private final AppointmentCollection appointmentCollection = new AppointmentCollection();
 
     public AppointmentIO() {
         Year currentYear = Year.of(LocalDate.now().getYear());
@@ -20,14 +19,14 @@ public class AppointmentIO {
         loadYear(currentYear);
     }
 
-    public AppointmentMap getAppointmentMapInstance() {
-        return appointmentMap;
+    public AppointmentCollection getAppointmentMapInstance() {
+        return appointmentCollection;
     }
 
     // this Method loads all Appointments of one Year into the System
     public void loadYear(Year year) {
 
-        File file = new File(pathToAppointmentFolder + "Appointments_" + year.getValue());
+        File file = new File(pathToAppointmentFolder + "/Appointments_" + year.getValue());
 
         try (BufferedReader bReader = new BufferedReader(new FileReader(file))) {
 
@@ -73,7 +72,7 @@ public class AppointmentIO {
                     line = bReader.readLine().substring(1);
                     appointment.setDescription(line);
 
-                    appointmentMap.addAppointment(appointment.getStartDate(), appointment);
+                    appointmentCollection.addAppointment(appointment.getStartDate(), appointment);
 
                 }
             }
@@ -109,4 +108,6 @@ public class AppointmentIO {
             expt.printStackTrace();
         }
     }
+
+    //TODO: create methods to write to file & save appointments
 }
