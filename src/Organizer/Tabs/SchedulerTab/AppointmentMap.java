@@ -20,7 +20,7 @@ public class AppointmentMap {
 
         Year year = Year.of(date.getYear());
         Month month = Month.of(date.getMonth().getValue());
-        Integer dayValue = date.getDayOfMonth();
+        int dayValue = date.getDayOfMonth();
         int monthIndex = month.getValue() - 1;
         int dayIndex = dayValue - 1;
 
