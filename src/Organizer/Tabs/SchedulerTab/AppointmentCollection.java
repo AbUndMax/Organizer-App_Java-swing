@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.TreeSet;
 
-public class AppointmentMap {
+public class AppointmentCollection {
 
     /*
     This Map holds all Appointments.
@@ -59,4 +59,5 @@ public class AppointmentMap {
         if (AppointmentMap.containsKey(year)) return AppointmentMap.get(year)[monthIndex];
         else return null;
     }
+
 }
