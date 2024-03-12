@@ -1,14 +1,12 @@
 package Organizer.Tabs.SchedulerTab;
 
-import org.junit.jupiter.api.extension.ExtensionContextException;
-
 public enum Repetition {
     NONE,
     DAILY,
     WEEKLY,
     YEARLY;
 
-    public boolean hasRepetition() {
+    public boolean isRepeating() {
         return (this != NONE);
     }
 
@@ -24,7 +22,12 @@ public enum Repetition {
         return (this == YEARLY);
     }
 
-    public static Repetition repetitionOf(String string) {
+    public static Repetition[] isRepeatingValues(){
+        Repetition[] array = {DAILY, WEEKLY, YEARLY};
+        return array;
+    }
+
+    public static Repetition StringToRepetition(String string) {
         switch (string) {
             case "NONE":
                 return NONE;
