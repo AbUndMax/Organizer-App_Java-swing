@@ -41,7 +41,7 @@ public class AppointmentDialog extends JDialog {
     private final JComboBox<String> startMinutesCBox;
     private final JComboBox<String> endHoursCBox;
     private final JComboBox<String> endMinutesCBox;
-    private final JComboBox<Repetition> repetitionCBox = new JComboBox(Repetition.hasRepetitionValues());
+    private final JComboBox<Repetition> repetitionCBox = new JComboBox(Repetition.isRepeatingValues());
     private final JSpinner numberOfRepetitionsSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 99, 1));
     private final JRadioButton selectRepetition = new JRadioButton();
     private final JRadioButton unSelectRepetition = new JRadioButton();
