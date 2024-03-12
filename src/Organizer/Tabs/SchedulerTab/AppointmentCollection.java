@@ -78,4 +78,12 @@ public class AppointmentCollection {
 
         return (monthArray[dayIndex] == null);
     }
+
+    public void deleteAppointment(Appointment appointment) {
+        //TODO: implement deleteAppointment
+    }
+
+    public void actualizeAppointment(Appointment appointment) {
+        //TODO: implement actualizeAppointment
+    }
 }
