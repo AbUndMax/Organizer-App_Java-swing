@@ -25,6 +25,21 @@ public class Appointment {
     // description provided by the user for the appointment
     private String description;
 
+    public Appointment() {
+    }
+
+    public Appointment(String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime,
+                       Repetition repetition, int numberOfRepetition, String description) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.repetition = repetition;
+        this.numberOfRepetition = numberOfRepetition;
+        this.description = description;
+    }
+
 
     // getters and setters:
 
