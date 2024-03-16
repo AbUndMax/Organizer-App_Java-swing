@@ -27,48 +27,48 @@ public class AppointmentIO {
         for (File file : files) {
             try (BufferedReader bReader = new BufferedReader(new FileReader(file))) {
 
-                String line;
+                String line = bReader.readLine();
 
+                // new Appointment Instance
+                Appointment appointment = new Appointment();
+
+                //set all Fields:
+
+                //read and set Title
+                line = line.substring(1);
+                appointment.setTitle(line);
+                //read and set startDate
+                line = bReader.readLine().substring(1);
+                String[] startDate = line.split("-");
+                appointment.setStartDate(getLocalDate(startDate));
+                //read and set EndDate
+                line = bReader.readLine().substring(1);
+                String[] endDate = line.split("-");
+                appointment.setEndDate(getLocalDate(endDate));
+                //read and set StartTime
+                line = bReader.readLine().substring(1);
+                String[] startTime = line.split(":");
+                appointment.setStartTime(getLocalTime(startTime));
+                //read and set EndTime
+                line = bReader.readLine().substring(1);
+                String[] endTime = line.split(":");
+                appointment.setEndTime(getLocalTime(endTime));
+                //read and set Repetition
+                line = bReader.readLine().substring(1);
+                Repetition repetition = Repetition.StringToRepetition(line);
+                appointment.setRepetition(repetition);
+                //read and set number of repetitions
+                line = bReader.readLine().substring(1);
+                int numberOfRepetition = Integer.parseInt(line);
+                appointment.setNumberOfRepetition(numberOfRepetition);
+                //read and set Description
+                String description = bReader.readLine().substring(1);
                 while ((line = bReader.readLine()) != null) {
-
-                    // new Appointment Instance
-                    Appointment appointment = new Appointment();
-
-                    //set all Fields:
-
-                    //read and set Title
-                    line = line.substring(1);
-                    appointment.setTitle(line);
-                    //read and set startDate
-                    line = bReader.readLine().substring(1);
-                    String[] startDate = line.split("-");
-                    appointment.setStartDate(getLocalDate(startDate));
-                    //read and set EndDate
-                    line = bReader.readLine().substring(1);
-                    String[] endDate = line.split("-");
-                    appointment.setEndDate(getLocalDate(endDate));
-                    //read and set StartTime
-                    line = bReader.readLine().substring(1);
-                    String[] startTime = line.split(":");
-                    appointment.setStartTime(getLocalTime(startTime));
-                    //read and set EndTime
-                    line = bReader.readLine().substring(1);
-                    String[] endTime = line.split(":");
-                    appointment.setEndTime(getLocalTime(endTime));
-                    //read and set Repetition
-                    line = bReader.readLine().substring(1);
-                    Repetition repetition = Repetition.StringToRepetition(line);
-                    appointment.setRepetition(repetition);
-                    //read and set number of repetitions
-                    line = bReader.readLine().substring(1);
-                    int numberOfRepetition = Integer.parseInt(line);
-                    appointment.setNumberOfRepetition(numberOfRepetition);
-                    //read and set Description
-                    line = bReader.readLine().substring(1);
-                    appointment.setDescription(line);
-
-                    appointmentCollection.addAppointment(appointment.getStartDate(), appointment);
+                    description = description + "\n" + line;
                 }
+                appointment.setDescription(description);
+
+                appointmentCollection.loadAppointment(appointment);
             }
             catch (Exception expt) {
                 expt.printStackTrace();
@@ -151,17 +151,16 @@ public class AppointmentIO {
 
         try (PrintWriter pw = new PrintWriter(file)) {
             pw.println(appointment.getTitle());
-            pw.write(">" + appointment.getStartDate().toString());
-            pw.write(">" + appointment.getEndDate().toString());
-            pw.write(">" + appointment.getStartTime().toString());
-            pw.write(">" + appointment.getEndTime().toString());
-            pw.write(">" + appointment.getRepetition().toString());
-            pw.write(">" + appointment.getNumberOfRepetition());
-            pw.write(">" + appointment.getDescription());
+            pw.println(">" + appointment.getStartDate().toString());
+            pw.println(">" + appointment.getEndDate().toString());
+            pw.println(">" + appointment.getStartTime().toString());
+            pw.println(">" + appointment.getEndTime().toString());
+            pw.println(">" + appointment.getRepetition().toString());
+            pw.println(">" + appointment.getNumberOfRepetition());
+            pw.println(">" + appointment.getDescription());
         }
         catch (Exception expt) {
             expt.printStackTrace();
         }
     }
-
 }
