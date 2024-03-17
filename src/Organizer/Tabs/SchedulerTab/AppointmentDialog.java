@@ -18,6 +18,7 @@ public class AppointmentDialog extends JDialog {
     private final AppointmentCollection collection;
     private final Appointment initialAppointment;
     private final boolean isNewAppointment;
+    private final Scheduler motherPane;
 
     //Appointment values of the appointment instance that was given to the constructor:
     private final String title;
@@ -83,36 +84,19 @@ public class AppointmentDialog extends JDialog {
 
     private void saveAppointment() {
         Appointment appointment = getNewAppointment();
-
-        //TODO: make a loop to create repetitions
-        // also create a option to make a appointment over several dates long
-        collection.addAppointment(currentStartDate(), appointment);
+        collection.addAppointment(appointment);
     }
 
-    private void actualizeAppointment(Appointment appointment) {
-        appointment.setTitle(titleField.getText());
-        appointment.setStartDate(currentStartDate());
-        appointment.setEndDate(currentEndDate());
-        appointment.setStartTime(currentStartTime());
-        appointment.setEndTime(currentEndTime());
-        Repetition repetition;
-        if (unSelectRepetition.isSelected()) repetition = NONE;
-        else repetition = (Repetition) repetitionCBox.getSelectedItem();
-        appointment.setRepetition(repetition);
-        appointment.setNumberOfRepetition((int) numberOfRepetitionsSpinner.getValue());
-        appointment.setDescription(descriptionArea.getText());
-
-        collection.actualizeAppointment(appointment);
-    }
-
-    public AppointmentDialog(Component component, AppointmentCollection collection, Appointment appointment) {
+    public AppointmentDialog(Scheduler motherPane, AppointmentCollection collection, Appointment appointment) {
         setSize(425, 310);
-        setLocationRelativeTo(component);
+        setLocationRelativeTo(motherPane);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setResizable(false);
+        setModal(true);
 
         this.collection = collection;
         this.initialAppointment = appointment;
+        this.motherPane = motherPane;
 
         if (appointment == null) {
             this.isNewAppointment = true;
@@ -589,12 +573,16 @@ public class AppointmentDialog extends JDialog {
     }
 
     private void saveAppointmentHandler() {
+        // if this dialog creates a new Appointment, we save it else we actualize an old one
         if (isNewAppointment) {
             saveAppointment();
+            motherPane.actualizeSchedulerPane();
             this.dispose();
         }
         else {
-            actualizeAppointment(initialAppointment);
+            Appointment appointment = getNewAppointment();
+            collection.actualizeAppointment(initialAppointment, appointment);
+            motherPane.actualizeSchedulerPane();
             this.dispose();
         }
     }
