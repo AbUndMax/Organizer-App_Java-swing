@@ -6,10 +6,7 @@ import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.time.LocalDate;
-import java.util.LinkedList;
 import java.util.TreeSet;
 
 public class DayPanel extends JPanel {
@@ -20,6 +17,18 @@ public class DayPanel extends JPanel {
     private final JList<Appointment> list = new JList<>(listModel);
     private final Scheduler motherPane;
     private final AppointmentCollection collection;
+    private final ListSelectionListener listener = new ListSelectionListener() {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            JList<Appointment> list = (JList) e.getSource();
+            if (!e.getValueIsAdjusting() && list.getSelectedValue() != null) {
+                AppointmentDialog appointmentDialog = new AppointmentDialog(motherPane, collection, list.getSelectedValue());
+                appointmentDialog.setVisible(true);
+
+                list.clearSelection();
+            }
+        }
+    };
 
     public DayPanel(LocalDate date, TreeSet<Appointment> appointments, Scheduler motherPane, AppointmentCollection collection) {
 
@@ -34,6 +43,8 @@ public class DayPanel extends JPanel {
 
         add(dateOfDayLabel(), BorderLayout.NORTH);
         add(appointmentPane(), BorderLayout.CENTER);
+
+        list.addListSelectionListener(listener);
     }
 
     private JLabel dateOfDayLabel() {
@@ -55,12 +66,6 @@ public class DayPanel extends JPanel {
         appointmentScrollPane.setBorder(null);
 
         fillList();
-        list.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                clickHandler(e);
-            }
-        });
 
         //TODO: make the blue selection indicator go away if something different is selected
 
@@ -80,17 +85,12 @@ public class DayPanel extends JPanel {
         }
     }
 
-    private void clickHandler(MouseEvent e) {
-        if (e.getClickCount() == 1) {
-            JList<Appointment> list = (JList) e.getSource();
-            AppointmentDialog appointmentDialog = new AppointmentDialog(motherPane, collection, list.getSelectedValue());
-            appointmentDialog.setVisible(true);
-        }
-    }
-
     public void actualizeDayPane(TreeSet<Appointment> newAppointmentsOfTheDay) {
+        list.removeListSelectionListener(listener);
         appointmentsOfTheDay = newAppointmentsOfTheDay;
         listModel.removeAllElements();
         fillList();
+        list.clearSelection();
+        list.addListSelectionListener(listener);
     }
 }
