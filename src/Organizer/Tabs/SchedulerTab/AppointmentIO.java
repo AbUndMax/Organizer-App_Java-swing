@@ -12,15 +12,13 @@ public class AppointmentIO {
 
     public AppointmentIO(AppointmentCollection appointmentCollection) {
         this.appointmentCollection = appointmentCollection;
-        Year currentYear = Year.of(LocalDate.now().getYear());
-        createNewYearFolder(currentYear);
-        loadYear(currentYear);
+        loadAppointmentsIntoSystem();
     }
 
     // this Method loads all Appointments of one Year into the System
-    public void loadYear(Year year) {
+    public void loadAppointmentsIntoSystem() {
 
-        File directory = new File(pathToAppointmentFolder + "/" + year.getValue());
+        File directory = new File(pathToAppointmentFolder);
 
         File[] files = directory.listFiles();
 
@@ -102,21 +100,6 @@ public class AppointmentIO {
         }
     }
 
-    public void NewAppointmentFile(Appointment appointment) {
-
-        Year appointmentYear = Year.of(appointment.getStartDate().getYear());
-        String pathToDirectory = pathToAppointmentFolder + "/" + appointmentYear;
-        File directory = new File(pathToDirectory);
-
-        if (directory.exists()) {
-            writeAppointmentToFile(appointment);
-        }
-        else {
-            createNewYearFolder(appointmentYear);
-            writeAppointmentToFile(appointment);
-        }
-    }
-
     public void actualizeAppointmentFile(Appointment oldAppointment, Appointment actualizedAppointment) {
         File oldFile = new File(getAppointmentPath(oldAppointment));
         File newFile = new File(getAppointmentPath(actualizedAppointment));
@@ -140,12 +123,10 @@ public class AppointmentIO {
 
         String appointmentFileString =  part1 + "_" + part2 + "_" + part3 + "_" + part4;
 
-        String appointmentYear =  String.valueOf(appointment.getStartDate().getYear());
-
-        return  pathToAppointmentFolder + "/" + appointmentYear + "/" + appointmentFileString;
+        return  pathToAppointmentFolder + "/" + appointmentFileString;
     }
 
-    private void writeAppointmentToFile(Appointment appointment) {
+    public void writeAppointmentToFile(Appointment appointment) {
 
         File file = new File(getAppointmentPath(appointment));
 
