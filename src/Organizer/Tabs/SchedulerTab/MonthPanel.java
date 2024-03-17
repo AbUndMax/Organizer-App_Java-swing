@@ -8,19 +8,26 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.TreeSet;
 
 public class MonthPanel extends JPanel {
 
-    private Year currentYear;
-    private Month currentMonth;
-    private TreeSet<Appointment>[] appointmentsOfThisMonth;
+    private final Year yearOfThisPanel;
+    private final Month monthOfThisPanel;
+    private final TreeSet<Appointment>[] appointmentsOfThisMonth;
+    private final Scheduler motherPane;
+    private final AppointmentCollection collection;
 
-    public MonthPanel(Year year, Month month, TreeSet<Appointment>[] appointments) {
+    private final LinkedList<DayPanel> dayPanelList = new LinkedList<>();
 
-        currentYear = year;
-        currentMonth = month;
+    public MonthPanel(Year year, Month month, TreeSet<Appointment>[] appointments, Scheduler motherPane, AppointmentCollection collection) {
+
+        yearOfThisPanel = year;
+        monthOfThisPanel = month;
         appointmentsOfThisMonth = appointments;
+        this.motherPane = motherPane;
+        this.collection = collection;
 
         setBackground(Color.WHITE);
         setLayout(new GridBagLayout());
@@ -43,9 +50,9 @@ public class MonthPanel extends JPanel {
 
         // add each day to the calendar:
         // get the Day of the week as an index & the length of the month
-        LocalDate firstDayOfMonth = LocalDate.of(currentYear.getValue(), month, 1);
+        LocalDate firstDayOfMonth = LocalDate.of(yearOfThisPanel.getValue(), month, 1);
         int indexOfFirstWeekdayOfMonth = firstDayOfMonth.getDayOfWeek().getValue() - 1;
-        int lengthOfMonth = currentMonth.length(year.isLeap());
+        int lengthOfMonth = monthOfThisPanel.length(year.isLeap());
 
         gbc.weighty = 1;
         int y = 1;
@@ -57,12 +64,25 @@ public class MonthPanel extends JPanel {
             // we have to increment daysToAdd and use it then again, because appointmentsOfThisMonth is actually
             // using the real day value (first day in month is 1, second is 2 and so on).
             // AppointmentMap is handling the correct indexing
-            TreeSet<Appointment> appointmentSet;
-            if (appointmentsOfThisMonth == null) appointmentSet = null;
-            else appointmentSet = appointmentsOfThisMonth[daysToAdd];
-            DayPanel day = new DayPanel(firstDayOfMonth.plusDays(daysToAdd++), appointmentSet);
+            TreeSet<Appointment> appointmentSet = appointmentsOfThisMonth[daysToAdd];
+//            if (appointmentsOfThisMonth == null) appointmentSet = null;
+//            else appointmentSet = appointmentsOfThisMonth[daysToAdd];
+            DayPanel day = new DayPanel(firstDayOfMonth.plusDays(daysToAdd++), appointmentSet, motherPane, collection);
+            dayPanelList.add(day);
             add(day, gbc);
         }
-
     }
+
+
+    public void actualizeMonthPane() {
+        System.out.println("Month Appointments;");
+        System.out.println(Arrays.toString(appointmentsOfThisMonth));
+        int d = 0;
+        for(DayPanel day : dayPanelList) {
+            day.actualizeDayPane(appointmentsOfThisMonth[d++]);
+        }
+    }
+
+    //TODO: fill also the days which are not belonging to this month
+    //  (write Month name to the day header e.g. Feb. 29 and make it somehow different in color)
 }
