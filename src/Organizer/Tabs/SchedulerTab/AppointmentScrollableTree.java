@@ -1,6 +1,8 @@
 package Organizer.Tabs.SchedulerTab;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
 import java.time.Month;
 import java.time.Year;
@@ -11,14 +13,32 @@ public class AppointmentScrollableTree extends JScrollPane {
 
     private AppointmentCollection appointmentCollection;
     private HashMap<Year, TreeSet<Appointment>[][]> appointmentMap;
+    private final Scheduler motherPane;
 
     private final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Years");
     private final DefaultTreeModel treeModel = new DefaultTreeModel(root);
     private final JTree tree = new JTree(treeModel);
+    private final TreeSelectionListener listener = new TreeSelectionListener() {
+        @Override
+        public void valueChanged(TreeSelectionEvent e) {
+            if (e.isAddedPath()) {
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                if (selectedNode != null && selectedNode.isLeaf()) {
+                    // Führen Sie hier die Aktionen aus, die Sie durchführen möchten, wenn ein Knoten ausgewählt wird.
+                    Appointment appointment = (Appointment) selectedNode.getUserObject();
+                    AppointmentDialog dialog = new AppointmentDialog(motherPane, appointmentCollection, appointment);
+                    dialog.setVisible(true);
+                }
+            }
 
-    public AppointmentScrollableTree(AppointmentCollection appointmentCollection) {
+            tree.clearSelection();
+        }
+    };
+
+    public AppointmentScrollableTree(AppointmentCollection appointmentCollection, Scheduler motherPane) {
         this.appointmentCollection = appointmentCollection;
         this.appointmentMap = appointmentCollection.getAppointmentMap();
+        this.motherPane = motherPane;
 
         DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
         renderer.setClosedIcon(null);
@@ -28,6 +48,8 @@ public class AppointmentScrollableTree extends JScrollPane {
         populateTree();
         add(tree);
         setViewportView(tree);
+
+        tree.addTreeSelectionListener(listener);
     }
 
     private void populateTree() {
@@ -59,10 +81,24 @@ public class AppointmentScrollableTree extends JScrollPane {
             }
         }
 
+        expandTree();
+
+        tree.setRootVisible(false);
+    }
+
+    public void actualizeAppointmentScrollTree() {
+        // clear current tree and repopulate it
+        tree.removeTreeSelectionListener(listener);
+        root.removeAllChildren();
+        populateTree();
+        treeModel.reload();
+        expandTree();
+        tree.addTreeSelectionListener(listener);
+    }
+
+    private void expandTree() {
         for (int i = 0; i < tree.getRowCount(); i++) {
             tree.expandRow(i);
         }
-
-        tree.setRootVisible(false);
     }
 }
