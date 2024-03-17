@@ -75,8 +75,6 @@ public class MonthPanel extends JPanel {
 
 
     public void actualizeMonthPane() {
-        System.out.println("Month Appointments;");
-        System.out.println(Arrays.toString(appointmentsOfThisMonth));
         int d = 0;
         for(DayPanel day : dayPanelList) {
             day.actualizeDayPane(appointmentsOfThisMonth[d++]);

@@ -73,8 +73,6 @@ public class DayPanel extends JPanel {
 
     private void fillList() {
         // add all Appointments to the listModel
-        System.out.println("all appointemnts of day: " + dateOfDay);
-        System.out.println(appointmentsOfTheDay);
         if (appointmentsOfTheDay != null) {
             for (Appointment appointment : appointmentsOfTheDay) {
                 listModel.addElement(appointment);
