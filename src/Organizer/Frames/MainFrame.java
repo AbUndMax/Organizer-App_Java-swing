@@ -26,7 +26,7 @@ public class MainFrame extends JFrame {
     public MainFrame(){
         setTitle("Organizer");
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-        setSize(800, 700);
+        setSize(1000, 700);
         setMinimumSize(new Dimension(300, 400));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
