@@ -10,16 +10,18 @@ import java.util.TreeSet;
 public class Scheduler extends JSplitPane {
 
     private final LocalDate currentDate = LocalDate.now();
-    private final AppointmentIO appointmentIO = new AppointmentIO();
-    private final AppointmentCollection appointmentCollection = appointmentIO.getAppointmentMapInstance();
+    private final AppointmentCollection appointmentCollection = new AppointmentCollection();
     private final JComboBox<Year> yearChooser = new JComboBox();
     private final JComboBox<Month> monthChooser = new JComboBox();
+    private MonthPanel currentMonthPane;
 
     public Scheduler() {
         setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 
         setLeftComponent(leftPane());
         setRightComponent(rightPane());
+
+
     }
 
     // in the left Split Pane we have the Appointment - List view component and the appointment control buttons
@@ -51,6 +53,8 @@ public class Scheduler extends JSplitPane {
         JButton delAppointmentButton = new JButton("delete appointment");
 
         //TODO: Add appointment button listeners
+        newAppointmentButton.addActionListener(e -> newAppointmentHandler());
+
 
         appointmentButtonPane.add(newAppointmentButton);
         appointmentButtonPane.add(delAppointmentButton);
@@ -89,11 +93,11 @@ public class Scheduler extends JSplitPane {
         Year currentYear = Year.of(currentDate.getYear());
         Month currentMonth = Month.of(currentDate.getMonthValue());
         // calendar will always start with 1999
-        Year i = Year.of(1999);
+        Year y = Year.of(1999);
         // there will be always +30 years from the year the application gets opened
-        while (i.getValue() != currentYear.plusYears(30).getValue()) {
-            yearChooser.addItem(i);
-            i = i.plusYears(1);
+        while (y.getValue() != currentYear.plusYears(30).getValue()) {
+            yearChooser.addItem(y);
+            y = y.plusYears(1);
         }
         for (Month month : Month.values()) monthChooser.addItem(month);
         // set current month and year as selected
@@ -121,6 +125,21 @@ public class Scheduler extends JSplitPane {
         TreeSet<Appointment>[] appointmentsOfThisMonth = appointmentCollection.getAppointmentsOfMonth(yearToCreate,
                                                                                                       monthToCreate);
 
-        return (new MonthPanel(yearToCreate, monthToCreate, appointmentsOfThisMonth));
+        currentMonthPane = new MonthPanel(yearToCreate, monthToCreate, appointmentsOfThisMonth, this, appointmentCollection);
+
+        return (currentMonthPane);
+    }
+
+    // ###################################################################################
+    // ################################# Action Handlers #################################
+    // #################################                 #################################
+
+    private void newAppointmentHandler() {
+        AppointmentDialog appointmentDialog = new AppointmentDialog(this, appointmentCollection, null);
+        appointmentDialog.setVisible(true);
+    }
+
+    public void actualizeSchedulerPane() {
+        currentMonthPane.actualizeMonthPane();
     }
 }
