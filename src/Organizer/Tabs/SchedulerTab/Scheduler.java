@@ -13,7 +13,9 @@ public class Scheduler extends JSplitPane {
     private final AppointmentCollection appointmentCollection = new AppointmentCollection();
     private final JComboBox<Year> yearChooser = new JComboBox();
     private final JComboBox<Month> monthChooser = new JComboBox();
+    private final JPanel rightSpacePane = new JPanel(new BorderLayout());
     private MonthPanel currentMonthPane;
+    private final AppointmentScrollableTree scrollTree = new AppointmentScrollableTree(appointmentCollection, this);
 
     public Scheduler() {
         setOrientation(JSplitPane.HORIZONTAL_SPLIT);
@@ -34,13 +36,14 @@ public class Scheduler extends JSplitPane {
         // add control buttons for Appointments
         leftSpacePane.add(appointmentButtonPane(), BorderLayout.SOUTH);
 
+        leftSpacePane.setMinimumSize(new Dimension(250, leftSpacePane.getPreferredSize().height));
+
         return leftSpacePane;
     }
 
     //Appointment List-view Panel:
     private JScrollPane appointmentListViewPane() {
         // setup the Appointment overview (by using a modified JTree embedded in JScrollPane
-        AppointmentScrollableTree scrollTree = new AppointmentScrollableTree(appointmentCollection);
         scrollTree.setPreferredSize(new Dimension(200, scrollTree.getHeight()));
 
         return scrollTree;
@@ -48,16 +51,14 @@ public class Scheduler extends JSplitPane {
 
     //Appointment control buttons:
     private JPanel appointmentButtonPane() {
-        JPanel appointmentButtonPane = new JPanel(new GridLayout(2, 1));
+        JPanel appointmentButtonPane = new JPanel(new GridLayout(1, 1));
         JButton newAppointmentButton = new JButton("new appointment");
-        JButton delAppointmentButton = new JButton("delete appointment");
-
-        //TODO: Add appointment button listeners
+        //JButton delAppointmentButton = new JButton("delete appointment");
         newAppointmentButton.addActionListener(e -> newAppointmentHandler());
 
 
         appointmentButtonPane.add(newAppointmentButton);
-        appointmentButtonPane.add(delAppointmentButton);
+        //appointmentButtonPane.add(delAppointmentButton);
 
         return appointmentButtonPane;
     }
@@ -65,13 +66,10 @@ public class Scheduler extends JSplitPane {
 
     // Panel for the right Space consisting of Calendar Monthly View & Calendar control Buttons
     private JPanel rightPane() {
-
-        JPanel rightSpacePane = new JPanel(new BorderLayout());
-
         // Calendar Control elements:
         rightSpacePane.add(calendarButtonPane(), BorderLayout.NORTH);
         // Calendar:
-        rightSpacePane.add(calendarPane(), BorderLayout.CENTER);
+        rightSpacePane.add(calendarPane(0), BorderLayout.CENTER);
 
         return rightSpacePane;
     }
@@ -86,8 +84,6 @@ public class Scheduler extends JSplitPane {
         // Buttons to "scroll" through the Months
         JButton prevMonth = new JButton("⏴ previous Month");
         JButton nextMonth = new JButton("next Month ⏵");
-
-        //TODO: add calendar control listeners
 
         // JComboBox to choose easily between years and months
         Year currentYear = Year.of(currentDate.getYear());
@@ -104,6 +100,12 @@ public class Scheduler extends JSplitPane {
         yearChooser.setSelectedItem(currentYear);
         monthChooser.setSelectedItem(currentMonth);
 
+        prevMonth.addActionListener(e -> previousMonthHandler());
+        nextMonth.addActionListener(e -> nextMonthHandler());
+
+        yearChooser.addActionListener(e -> newMonthHandler());
+        monthChooser.addActionListener(e -> newMonthHandler());
+
         //add the control elements to the Panel
         calendarButtonPane.add(Box.createHorizontalStrut(5));
         calendarButtonPane.add(prevMonth);
@@ -119,9 +121,19 @@ public class Scheduler extends JSplitPane {
     }
 
     // Panel for the Calendar
-    private JPanel calendarPane() {
+    private JPanel calendarPane(int plusMonths) {
+        // if month should go up, check if that changed the month to jan -> which means we go also one year up
+        if (plusMonths == 1) {
+            monthChooser.setSelectedItem(((Month) monthChooser.getSelectedItem()).plus(1));
+            if (monthChooser.getSelectedItem() == Month.JANUARY) yearChooser.setSelectedIndex(yearChooser.getSelectedIndex() + 1);
+        } // same for substraction -> if month drops from jan to december -> increment the year
+        else if (plusMonths == -1) {
+            monthChooser.setSelectedItem(((Month) monthChooser.getSelectedItem()).minus(1));
+            if ((Month) monthChooser.getSelectedItem() == Month.DECEMBER) yearChooser.setSelectedIndex(yearChooser.getSelectedIndex() - 1);
+        }
         Year yearToCreate = (Year) yearChooser.getSelectedItem();
         Month monthToCreate = (Month) monthChooser.getSelectedItem();
+
         TreeSet<Appointment>[] appointmentsOfThisMonth = appointmentCollection.getAppointmentsOfMonth(yearToCreate,
                                                                                                       monthToCreate);
 
@@ -141,5 +153,27 @@ public class Scheduler extends JSplitPane {
 
     public void actualizeSchedulerPane() {
         currentMonthPane.actualizeMonthPane();
+        scrollTree.actualizeAppointmentScrollTree();
+    }
+
+    private void nextMonthHandler() {
+        rightSpacePane.remove(currentMonthPane);
+        rightSpacePane.add(calendarPane(1));
+        rightSpacePane.revalidate();
+        rightSpacePane.repaint();
+    }
+
+    private void previousMonthHandler() {
+        rightSpacePane.remove(currentMonthPane);
+        rightSpacePane.add(calendarPane(-1));
+        rightSpacePane.revalidate();
+        rightSpacePane.repaint();
+    }
+
+    private void newMonthHandler() {
+        rightSpacePane.remove(currentMonthPane);
+        rightSpacePane.add(calendarPane(0));
+        rightSpacePane.revalidate();
+        rightSpacePane.repaint();
     }
 }
