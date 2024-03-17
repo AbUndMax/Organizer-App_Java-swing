@@ -150,7 +150,7 @@ public class AppointmentIO {
         File file = new File(getAppointmentPath(appointment));
 
         try (PrintWriter pw = new PrintWriter(file)) {
-            pw.println(appointment.getTitle());
+            pw.println(">" + appointment.getTitle());
             pw.println(">" + appointment.getStartDate().toString());
             pw.println(">" + appointment.getEndDate().toString());
             pw.println(">" + appointment.getStartTime().toString());
