@@ -28,7 +28,7 @@ public class AppointmentCollection {
             // if the year-key doesn't exist, make a completly new year and TreeSet<Appointment>[month][day] matrix
             if (!appointmentMap.containsKey(year)) {
                 TreeSet<Appointment> appointments = new TreeSet<>(Comparator.comparing(Appointment::getStartTime));
-                TreeSet<Appointment>[][] AppointmentMatrix = new TreeSet[12][month.length(year.isLeap())];
+                TreeSet<Appointment>[][] AppointmentMatrix = new TreeSet[12][31];
 
                 AppointmentMatrix[monthIndex][dayIndex] = appointments;
                 appointmentMap.put(year, AppointmentMatrix);
@@ -103,7 +103,7 @@ public class AppointmentCollection {
     public void addAppointment(Appointment appointment) {
         addAppointmentToMap(appointment, getAllOccurrences(appointment));
         // write new Appointment to File
-        appointmentIO.NewAppointmentFile(appointment);
+        appointmentIO.writeAppointmentToFile(appointment);
     }
 
     public void deleteAppointment(Appointment appointment) {
@@ -142,8 +142,8 @@ public class AppointmentCollection {
     public TreeSet<Appointment>[] getAppointmentsOfMonth(Year year, Month month) {
         int monthIndex = month.getValue() - 1;
 
-        if (appointmentMap.containsKey(year)) return appointmentMap.get(year)[monthIndex];
-        else return null;
+        if (!appointmentMap.containsKey(year)) appointmentMap.put(year, new TreeSet[12][31]);
+        return appointmentMap.get(year)[monthIndex];
     }
 
     // checks if a given month has any appointments

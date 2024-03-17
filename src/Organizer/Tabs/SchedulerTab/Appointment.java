@@ -110,6 +110,6 @@ public class Appointment {
     // this method is used by the JTree Model to get the Appointment-Title
     @Override
     public String toString(){
-        return title;
+        return startTime + "' " + title;
     }
 }

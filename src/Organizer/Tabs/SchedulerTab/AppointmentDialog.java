@@ -570,20 +570,22 @@ public class AppointmentDialog extends JDialog {
             collection.deleteAppointment(initialAppointment);
             this.dispose();
         }
+
+        motherPane.actualizeSchedulerPane();
     }
 
     private void saveAppointmentHandler() {
         // if this dialog creates a new Appointment, we save it else we actualize an old one
         if (isNewAppointment) {
             saveAppointment();
-            motherPane.actualizeSchedulerPane();
             this.dispose();
         }
         else {
             Appointment appointment = getNewAppointment();
             collection.actualizeAppointment(initialAppointment, appointment);
-            motherPane.actualizeSchedulerPane();
             this.dispose();
         }
+
+        motherPane.actualizeSchedulerPane();
     }
 }
