@@ -13,7 +13,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -37,14 +39,21 @@ public class ScrollTable extends JPanel {
         if (selectedRow != -1) { // checks rather a row is selected or not
             DefaultTableModel model = (DefaultTableModel) table.getModel();
             model.removeRow(selectedRow);
+            tableContent.remove(selectedRow);
         }
+        writeToFileFunction.run();
     };
     private final ActionListener newEntryListener = e -> {
         String[] userInput = new String[colNames.length];
         new NewTableEntryDialog(colNames, userInput);
 
-        tableContent.add(userInput);
-        actualizeTable();
+        boolean anyNull = Arrays.stream(userInput).anyMatch(Objects::isNull);
+
+        if (!anyNull) {
+            tableContent.add(userInput);
+            actualizeTable();
+            writeToFileFunction.run();
+        }
     };
 
     public ScrollTable(String[] colNames, ArrayList<String[]> tableContent, Runnable writeToFileFunction) {
