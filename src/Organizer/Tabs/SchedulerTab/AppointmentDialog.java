@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.Year;
+import java.time.temporal.ChronoUnit;
 
 import static Organizer.Tabs.SchedulerTab.Repetition.NONE;
 
@@ -42,11 +43,9 @@ public class AppointmentDialog extends JDialog {
     private final JComboBox<String> startMinutesCBox;
     private final JComboBox<String> endHoursCBox;
     private final JComboBox<String> endMinutesCBox;
-    private final JComboBox<Repetition> repetitionCBox = new JComboBox(Repetition.isRepeatingValues());
+    private final JComboBox<Repetition> repetitionCBox = new JComboBox(Repetition.values());
     private final JSpinner numberOfRepetitionsSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 99, 1));
-    private final JRadioButton selectRepetition = new JRadioButton();
-    private final JRadioButton unSelectRepetition = new JRadioButton();
-    private final ButtonGroup radioGroup = new ButtonGroup();
+    private final JCheckBox allDayCheck = new JCheckBox("all day");
     private final JTextArea descriptionArea = new JTextArea();
     private final JButton deleteButton = new JButton("delete");
     private final JButton saveButton = new JButton("save");
@@ -70,9 +69,7 @@ public class AppointmentDialog extends JDialog {
 
     private Appointment getNewAppointment() {
         String title = titleField.getText();
-        Repetition repetition;
-        if (unSelectRepetition.isSelected()) repetition = NONE;
-        else repetition = (Repetition) repetitionCBox.getSelectedItem();
+        Repetition repetition = (Repetition) repetitionCBox.getSelectedItem();
         int numberOfRepetitions = (int) numberOfRepetitionsSpinner.getValue();
         String description = descriptionArea.getText();
 
@@ -88,7 +85,7 @@ public class AppointmentDialog extends JDialog {
     }
 
     public AppointmentDialog(Scheduler motherPane, AppointmentCollection collection, Appointment appointment) {
-        setSize(425, 310);
+        setSize(400, 310);
         setLocationRelativeTo(motherPane);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -138,12 +135,16 @@ public class AppointmentDialog extends JDialog {
         endYearCBox = newYearComboBox(endDate, (Year) startYearCBox.getSelectedItem());
         endYearCBox.addItemListener(this::endYearBoxHandler);
         endMonthCBox = newMonthComboBox(endDate, (Month) startMonthCBox.getSelectedItem());
+        endMonthCBox.addActionListener(e -> addItemsToRepetitionChooser());
         endDayCBox = newDayComboBox(endYearCBox, endMonthCBox, endDate, (Integer) startDayCBox.getSelectedItem());
+        endDayCBox.addActionListener(e -> addItemsToRepetitionChooser());
         startHoursCBox = newHourComboBox(startTime);
         startMinutesCBox = newMinuteComboBox(startTime);
         endMinutesCBox = newMinuteComboBox(endTime);
         deleteButton.addActionListener(e -> deleteAppointmentHandler());
         saveButton.addActionListener(e -> saveAppointmentHandler());
+        allDayCheck.addActionListener(e -> checkBoxHandler());
+        repetitionCBox.setSelectedItem(repetition);
 
         setupPanels();
     }
@@ -301,11 +302,13 @@ public class AppointmentDialog extends JDialog {
         JLabel label = new JLabel("no repetition");
         labelPanel.add(label);
 
-        // group the radio Buttons
-        radioGroup.add(unSelectRepetition);
-        radioGroup.add(selectRepetition);
+        JPanel checkBoxPanel = new JPanel();
+        BoxLayout checkBoxPanelLayout = new BoxLayout(checkBoxPanel, BoxLayout.X_AXIS);
+        checkBoxPanel.setLayout(checkBoxPanelLayout);
+        checkBoxPanel.add(Box.createHorizontalStrut(0));
+        checkBoxPanel.add(allDayCheck);
+        checkBoxPanel.add(Box.createHorizontalGlue());
 
-        JPanel upperRadioButton = radioButtonPane(unSelectRepetition, labelPanel);
 
         JPanel repetitionChooserPane = new JPanel();
         BoxLayout boxLayout1 = new BoxLayout(repetitionChooserPane, BoxLayout.X_AXIS);
@@ -318,11 +321,7 @@ public class AppointmentDialog extends JDialog {
         numberOfRepetitionsSpinner.setMinimumSize(prefferedSpinnerSize);
         numberOfRepetitionsSpinner.setMaximumSize(prefferedSpinnerSize);
 
-        //pack radioButtons
-        selectRepetition.setPreferredSize(selectRepetition.getMinimumSize());
-        selectRepetition.setMaximumSize(selectRepetition.getMinimumSize());
-        unSelectRepetition.setMaximumSize(unSelectRepetition.getMinimumSize());
-        unSelectRepetition.setPreferredSize(unSelectRepetition.getMinimumSize());
+        addItemsToRepetitionChooser();
 
         repetitionChooserPane.add(Box.createHorizontalStrut(0));
         repetitionChooserPane.add(repetitionCBox);
@@ -332,34 +331,11 @@ public class AppointmentDialog extends JDialog {
         repetitionChooserPane.add(numberOfRepetitionsSpinner);
         repetitionChooserPane.add(Box.createHorizontalGlue());
 
-        JPanel lowerRadioButton = radioButtonPane(selectRepetition, repetitionChooserPane);
-
-        radioButtonPane.add(upperRadioButton);
-        radioButtonPane.add(lowerRadioButton);
-
-        if (repetition.isRepeating()) {
-            selectRepetition.setSelected(true);
-            repetitionCBox.setSelectedItem(repetition);
-            numberOfRepetitionsSpinner.setValue(numberOfRepetitions);
-        }
-        else unSelectRepetition.setSelected(true);
+        radioButtonPane.add(checkBoxPanel);
+        radioButtonPane.add(repetitionChooserPane);
 
         radioButtonPane.setMaximumSize(radioButtonPane.getMinimumSize());
         radioButtonPane.setPreferredSize(radioButtonPane.getMinimumSize());
-
-        return radioButtonPane;
-    }
-
-    private JPanel radioButtonPane(JRadioButton radioButton, JPanel panel) {
-        JPanel radioButtonPane = new JPanel();
-        BoxLayout boxLayout = new BoxLayout(radioButtonPane, BoxLayout.X_AXIS);
-        radioButtonPane.setLayout(boxLayout);
-
-        radioButtonPane.add(Box.createHorizontalStrut(0));
-        radioButtonPane.add(radioButton);
-        radioButtonPane.add(Box.createHorizontalStrut(0));
-        radioButtonPane.add(panel);
-        radioButtonPane.add(Box.createHorizontalGlue());
 
         return radioButtonPane;
     }
@@ -383,6 +359,45 @@ public class AppointmentDialog extends JDialog {
         controlButtonPane.add(Box.createHorizontalStrut(5));
 
         return controlButtonPane;
+    }
+
+    private void addItemsToRepetitionChooser() {
+        repetitionCBox.removeAllItems();
+
+        if (startMonthCBox.getSelectedItem() != null && endMonthCBox.getSelectedItem() != null &&
+            startDayCBox.getSelectedItem() != null && endDayCBox.getSelectedItem() != null) {
+            LocalDate strtDt = LocalDate.of(((Year) startYearCBox.getSelectedItem()).getValue(),(Month) startMonthCBox.getSelectedItem(),(int) startDayCBox.getSelectedItem());
+            LocalDate endDt = LocalDate.of(((Year) endYearCBox.getSelectedItem()).getValue(), (Month) endMonthCBox.getSelectedItem(), (int) endDayCBox.getSelectedItem());
+
+            long daysBetween = ChronoUnit.DAYS.between(strtDt, endDt);
+            long yearsBetween = ChronoUnit.YEARS.between(strtDt, endDt);
+            System.out.println(daysBetween);
+            System.out.println(yearsBetween);
+            if (daysBetween == 0) {
+                for (Repetition rep : Repetition.values()) {
+                    repetitionCBox.addItem(rep);
+                }
+                repetitionCBox.setSelectedItem(repetition);
+            }
+            else if (daysBetween > 0 && daysBetween <= 7) {
+                repetitionCBox.addItem(Repetition.NONE);
+                repetitionCBox.addItem(Repetition.WEEKLY);
+                repetitionCBox.addItem(Repetition.YEARLY);
+
+                repetitionCBox.setSelectedItem(NONE);
+            }
+            else if (daysBetween > 7 && yearsBetween < 1) {
+                repetitionCBox.addItem(Repetition.NONE);
+                repetitionCBox.addItem(Repetition.YEARLY);
+
+                repetitionCBox.setSelectedItem(NONE);
+            }
+            else {
+                repetitionCBox.addItem(Repetition.NONE);
+                repetitionCBox.setSelectedItem(NONE);
+            }
+        }
+
     }
 
     // ##########################################################################################
@@ -432,7 +447,7 @@ public class AppointmentDialog extends JDialog {
 
         hourJCBox.setSelectedIndex(setSelectedTime.getHour());
 
-        hourJCBox.addItemListener(e -> adjustDate());
+        hourJCBox.addItemListener(e -> timeBoxHandler());
 
         return hourJCBox;
     }
@@ -448,7 +463,7 @@ public class AppointmentDialog extends JDialog {
 
         minuteJCBox.setSelectedIndex(setSelectedTime.getMinute());
 
-        minuteJCBox.addItemListener(e -> adjustDate());
+        minuteJCBox.addItemListener(e -> timeBoxHandler());
 
         return minuteJCBox;
     }
@@ -457,7 +472,7 @@ public class AppointmentDialog extends JDialog {
     // ################################# Action Handlers #################################
     // #################################                 #################################
 
-    private void adjustDate() {
+    private void timeBoxHandler() {
         //if the endTime < startTime AND endDate <= startDate -> make endDate = startDate + 1 day
 
         if (currentEndTime().isBefore(currentStartTime())
@@ -466,6 +481,25 @@ public class AppointmentDialog extends JDialog {
             endYearCBox.setSelectedItem(startYearCBox.getSelectedItem());
             endMonthCBox.setSelectedItem(startMonthCBox.getSelectedItem());
             endDayCBox.setSelectedItem((Integer) startDayCBox.getSelectedItem() + 1);
+        }
+
+        // if the selcted time is from 00:00 to 23:59 -> all day gets selected else not
+        if (startHoursCBox.getSelectedItem().equals("00") &&
+            startMinutesCBox.getSelectedItem().equals("00") &&
+            endHoursCBox.getSelectedItem().equals("23") &&
+            endMinutesCBox.getSelectedItem().equals("59")) {
+            allDayCheck.setSelected(true);
+        }
+        else allDayCheck.setSelected(false);
+    }
+
+    // if checkAllDay is selcted, time is set from 00:00 to 23:59
+    private void checkBoxHandler() {
+        if (allDayCheck.isSelected()) {
+            startHoursCBox.setSelectedItem("00");
+            startMinutesCBox.setSelectedItem("00");
+            endHoursCBox.setSelectedItem("23");
+            endMinutesCBox.setSelectedItem("59");
         }
     }
 
@@ -538,12 +572,14 @@ public class AppointmentDialog extends JDialog {
         }
         fillMonthBox(endMonthCBox, startMonth);
         fillDayBox(endYearCBox, endMonthCBox, endDayCBox, startDay);
+        addItemsToRepetitionChooser();
     }
 
     private void startBoxHandler(ItemEvent e) {
         Year startYear = (Year) startYearCBox.getSelectedItem();
         endYearBoxHandler(e);
         fillYearBox(endYearCBox, startYear);
+        addItemsToRepetitionChooser();
     }
 
     private ItemListener[] removeAllComboListeners(JComboBox comboBox) {
