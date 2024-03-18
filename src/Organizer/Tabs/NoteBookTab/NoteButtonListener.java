@@ -1,6 +1,7 @@
 package Organizer.Tabs.NoteBookTab;
 
 import Organizer.Frames.MainFrame;
+import Organizer.Main;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -45,14 +46,26 @@ public class NoteButtonListener implements ActionListener {
             List<String> content = Arrays.asList(textArea.getText().split("\\n"));
             // wrote the content to the file
             Files.write(MainFrame.noteBookPane.getCurrentFile(), content, StandardCharsets.UTF_8);
+            JOptionPane.showMessageDialog(Main.mainFrame, "File successfully saved!", "SAVED",
+                                          JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
+            JOptionPane.showMessageDialog(Main.mainFrame, "Error: something went wrong :(", "ERROR",
+                                          JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
 
     private void deleteFile() {
         try {
-            Files.delete(MainFrame.noteBookPane.getCurrentFile());
+            int response = JOptionPane.showConfirmDialog(Main.mainFrame, "Do you really want to delete this Note?",
+                                                         "CONFIRM DELETION", JOptionPane.YES_NO_OPTION,
+                                                         JOptionPane.QUESTION_MESSAGE);
+            if (response == JOptionPane.NO_OPTION) {
+                return;
+            } else if (response == JOptionPane.YES_OPTION) {
+                Files.delete(MainFrame.noteBookPane.getCurrentFile());
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
