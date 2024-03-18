@@ -1,6 +1,7 @@
 package Organizer.Tabs.PhoneBookTab;
 
 import Organizer.Main;
+import Organizer.Tools.NewTableEntryDialog;
 import Organizer.Tools.ScrollTable;
 
 import javax.swing.*;
@@ -16,7 +17,8 @@ public class PhoneBook extends JPanel {
     private static final String[] phoneBookColNames = {"name", "surname", "phone-number"};
     private static ArrayList<String[]> phoneBookEntries = new ArrayList<>();
     private static String currentFilePath;
-    private static final ScrollTable phoneBookScrollTable = new ScrollTable(phoneBookColNames, phoneBookEntries, () -> saveToFile(currentFilePath));
+    private static final ScrollTable phoneBookScrollTable = new ScrollTable(phoneBookColNames, phoneBookEntries,
+                                                                            () -> saveToFile(currentFilePath));
 
     public PhoneBook() {
         setLayout(new BorderLayout());
@@ -55,7 +57,7 @@ public class PhoneBook extends JPanel {
     private void loadDefaultPhoneBookTable(){
         currentFilePath = "Files/PhoneBookFiles/phone_book_default.txt";
         createPhoneBookEntries(currentFilePath);
-        phoneBookScrollTable.actualizeTable(phoneBookEntries);
+        phoneBookScrollTable.actualizeTable();
     }
 
     // opens FileChooser and lets user select a file
@@ -71,7 +73,7 @@ public class PhoneBook extends JPanel {
         createPhoneBookEntries(filePath);
 
         // actualize table
-        phoneBookScrollTable.actualizeTable(phoneBookEntries);
+        phoneBookScrollTable.actualizeTable();
     }
 
     public static void saveToFile(String filePath) {

@@ -10,21 +10,42 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
 
 public class ScrollTable extends JPanel {
 
     private String[] colNames;
-    private final DefaultTableModel tableModel = new DefaultTableModel();
-    private final JTextField searchBar = new JTextField("Search...");
-    private final JComboBox columnChooser = new JComboBox();
     private final JPanel searchBarPane = new JPanel();
     private final JTable table = new JTable();
     private final JScrollPane scrollPane = new JScrollPane();
+    private final DefaultTableModel tableModel = new DefaultTableModel();
+    private final JTextField searchBar = new JTextField("Search...");
+    private final JComboBox columnChooser = new JComboBox();
+    private final JButton newEntry = new JButton("new entry");
+    private final JButton delEntry = new JButton("delete selected entry");
+
     private ArrayList<String[]> tableContent;
     private Runnable writeToFileFunction;
+    private final ActionListener delEntryListener = e -> {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) { // checks rather a row is selected or not
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            model.removeRow(selectedRow);
+        }
+    };
+    private final ActionListener newEntryListener = e -> {
+        String[] userInput = new String[colNames.length];
+        new NewTableEntryDialog(colNames, userInput);
+
+        tableContent.add(userInput);
+        actualizeTable();
+    };
 
     public ScrollTable(String[] colNames, ArrayList<String[]> tableContent, Runnable writeToFileFunction) {
         this.colNames = colNames;
@@ -47,7 +68,9 @@ public class ScrollTable extends JPanel {
         searchBarPane.setLayout(new BoxLayout(searchBarPane, BoxLayout.X_AXIS));
 
         searchBar.setAlignmentX(Component.LEFT_ALIGNMENT);
-        searchBar.setMaximumSize(new Dimension(200, searchBar.getMinimumSize().height));
+        Dimension searchBarDimension = new Dimension(200, searchBar.getMinimumSize().height);
+        searchBar.setMaximumSize(searchBarDimension);
+        searchBar.setPreferredSize(searchBarDimension);
 
         for (String columnName: colNames) {
             columnChooser.addItem(columnName);
@@ -55,13 +78,22 @@ public class ScrollTable extends JPanel {
 
         columnChooser.setMaximumSize(new Dimension(200, columnChooser.getMinimumSize().height));
 
+        searchBarPane.add(Box.createHorizontalStrut(10));
+        searchBarPane.add(delEntry);
+        searchBarPane.add(Box.createHorizontalStrut(10));
+        searchBarPane.add(newEntry);
+        searchBarPane.add(Box.createHorizontalGlue());
         searchBarPane.add(searchBar);
         searchBarPane.add(Box.createHorizontalStrut(10));
         searchBarPane.add(columnChooser);
+        searchBarPane.add(Box.createHorizontalStrut(10));
 
         searchBar.getDocument().addDocumentListener(new SearchBarList());
+        delEntry.addActionListener(delEntryListener);
+        newEntry.addActionListener(newEntryListener);
 
         searchBarPane.setMaximumSize(new Dimension(searchBarPane.getMaximumSize().width, searchBarPane.getMinimumSize().height));
+
     }
 
     private void setupScrollableTable() {
@@ -70,17 +102,17 @@ public class ScrollTable extends JPanel {
             tableModel.addColumn(name);
         }
 
+        tableModel.addTableModelListener(new TableListener());
         table.setModel(tableModel);
-        table.getModel().addTableModelListener(new TableListener());
 
         scrollPane.setViewportView(table);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
 
     // input searchPattern -> output matching entries
-    public ArrayList<String[]> searchTable(String searchPattern, int columnToSearch) {
+    public LinkedList<String[]> searchTable(String searchPattern, int columnToSearch) {
 
-        ArrayList<String[]> searchedTableContent = new ArrayList<>();
+        LinkedList<String[]> searchedTableContent = new LinkedList<>();
         Pattern compiledPattern = Pattern.compile(searchPattern, Pattern.CASE_INSENSITIVE);
 
         for (String[] array : tableContent) {
@@ -94,8 +126,7 @@ public class ScrollTable extends JPanel {
     }
 
     // input ArrayList<String> -> draws new table
-    public void actualizeTable(ArrayList<String[]> tableContent) {
-
+    public void actualizeTable() {
         //zurücksetzen des table
         tableModel.setRowCount(0);
 
@@ -103,11 +134,16 @@ public class ScrollTable extends JPanel {
         for (String[] array : tableContent){
             tableModel.addRow(array);
         }
-
     }
 
     private void reactToSearchBar(){
-        actualizeTable(searchTable(searchBar.getText(), columnChooser.getSelectedIndex()));
+        LinkedList<String[]> matchingEntries = searchTable(searchBar.getText(), columnChooser.getSelectedIndex());
+
+        tableModel.setRowCount(0);
+
+        for (String[] array : matchingEntries) {
+            tableModel.addRow(array);
+        }
     }
 
     class SearchBarList implements DocumentListener {

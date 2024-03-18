@@ -1,6 +1,7 @@
 package Organizer.Tabs.AddressBookTab;
 
 import Organizer.Main;
+import Organizer.Tools.NewTableEntryDialog;
 import Organizer.Tools.ScrollTable;
 
 import javax.swing.*;
@@ -15,7 +16,8 @@ public class AddressBook extends JPanel {
     private static final String[] colNamesAddresses = {"name", "street & number", "city", "postal-code", "country"};
     private static ArrayList<String[]> AddressEntries = new ArrayList<>();
     private static String currentFilePath;
-    private static final ScrollTable AddressScrollTable = new ScrollTable(colNamesAddresses, AddressEntries, () -> saveToFile(currentFilePath));
+    private static final ScrollTable AddressScrollTable = new ScrollTable(colNamesAddresses, AddressEntries,
+                                                                          () -> saveToFile(currentFilePath));
 
     public AddressBook() {
         setLayout(new BorderLayout());
@@ -55,7 +57,7 @@ public class AddressBook extends JPanel {
         currentFilePath = "Files/AddressBookFiles/address_book_default.txt";
         createAddressBookEntry(currentFilePath);
 
-        AddressScrollTable.actualizeTable(AddressEntries);
+        AddressScrollTable.actualizeTable();
     }
 
     // opens FileChooser and lets user select a file
@@ -70,7 +72,7 @@ public class AddressBook extends JPanel {
         createAddressBookEntry(currentFilePath);
 
         // actualize table
-        AddressScrollTable.actualizeTable(AddressEntries);
+        AddressScrollTable.actualizeTable();
     }
 
     public static void saveToFile(String filePath) {
