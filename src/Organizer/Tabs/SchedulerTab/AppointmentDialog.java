@@ -148,6 +148,7 @@ public class AppointmentDialog extends JDialog {
             allDayCheck.setSelected(true);
         }
         allDayCheck.addActionListener(e -> checkBoxHandler());
+        numberOfRepetitionsSpinner.setValue(numberOfRepetitions);
 
         setupPanels();
     }
@@ -567,7 +568,7 @@ public class AppointmentDialog extends JDialog {
         if (startYearValue == endYearValue) {
             startMonth = (Month) startMonthCBox.getSelectedItem();
 
-            if (startMonthValue == endMonthValue) {
+            if (startMonthValue == endMonthValue && startDayCBox.getSelectedItem() != null) {
                 startDay = (Integer) startDayCBox.getSelectedItem();
             }
         }
