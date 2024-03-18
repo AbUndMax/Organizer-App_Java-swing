@@ -371,8 +371,6 @@ public class AppointmentDialog extends JDialog {
 
             long daysBetween = ChronoUnit.DAYS.between(strtDt, endDt);
             long yearsBetween = ChronoUnit.YEARS.between(strtDt, endDt);
-            System.out.println(daysBetween);
-            System.out.println(yearsBetween);
             if (daysBetween == 0) {
                 for (Repetition rep : Repetition.values()) {
                     repetitionCBox.addItem(rep);
