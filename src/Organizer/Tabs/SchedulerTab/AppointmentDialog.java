@@ -143,8 +143,11 @@ public class AppointmentDialog extends JDialog {
         endMinutesCBox = newMinuteComboBox(endTime);
         deleteButton.addActionListener(e -> deleteAppointmentHandler());
         saveButton.addActionListener(e -> saveAppointmentHandler());
-        allDayCheck.addActionListener(e -> checkBoxHandler());
         repetitionCBox.setSelectedItem(repetition);
+        if (startTime.equals(LocalTime.of(0, 0)) && endTime.equals(LocalTime.of(23, 59))) {
+            allDayCheck.setSelected(true);
+        }
+        allDayCheck.addActionListener(e -> checkBoxHandler());
 
         setupPanels();
     }
@@ -316,10 +319,10 @@ public class AppointmentDialog extends JDialog {
         JLabel xLabel = new JLabel("X");
 
         ((JSpinner.DefaultEditor) numberOfRepetitionsSpinner.getEditor()).getTextField().setFocusable(false);
-        Dimension prefferedSpinnerSize = new Dimension(45, numberOfRepetitionsSpinner.getPreferredSize().height);
-        numberOfRepetitionsSpinner.setPreferredSize(prefferedSpinnerSize);
-        numberOfRepetitionsSpinner.setMinimumSize(prefferedSpinnerSize);
-        numberOfRepetitionsSpinner.setMaximumSize(prefferedSpinnerSize);
+        Dimension preferredSpinnerSize = new Dimension(45, numberOfRepetitionsSpinner.getPreferredSize().height);
+        numberOfRepetitionsSpinner.setPreferredSize(preferredSpinnerSize);
+        numberOfRepetitionsSpinner.setMinimumSize(preferredSpinnerSize);
+        numberOfRepetitionsSpinner.setMaximumSize(preferredSpinnerSize);
 
         addItemsToRepetitionChooser();
 
@@ -528,7 +531,7 @@ public class AppointmentDialog extends JDialog {
         do {
             monthComboBox.addItem(m);
             m = m.plus(1);
-        } while (m != Month.DECEMBER);
+        } while (m != Month.JANUARY);
 
         addAllComboListeners(listenerList, monthComboBox);
     }
