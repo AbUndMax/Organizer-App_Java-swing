@@ -117,11 +117,14 @@ public class AppointmentIO {
 
     private String getAppointmentPath(Appointment appointment) {
         String part1 = appointment.getStartDate().toString();
-        String part2 = appointment.getStartTime().toString();
+        int part2H = appointment.getStartTime().getHour();
+        int part2M = appointment.getStartTime().getMinute();
         String part3 = appointment.getEndDate().toString();
-        String part4 = appointment.getEndTime().toString();
+        int part4H = appointment.getEndTime().getHour();
+        int part4M = appointment.getEndTime().getMinute();
 
-        String appointmentFileString =  part1 + "_" + part2 + "_" + part3 + "_" + part4;
+
+        String appointmentFileString =  part1 + "_" + part2H + "-" + part2M + "_" + part3 + "_" + part4H + "-" + part4M;
 
         return  pathToAppointmentFolder + "/" + appointmentFileString;
     }
