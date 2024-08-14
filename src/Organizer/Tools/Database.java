@@ -243,4 +243,139 @@ public class Database {
         return sEntries;
     }
 
+    public static void updatePhoneBook(PhoneBookEntry entry) {
+        String sql = "UPDATE phone_book SET name = ?, surname = ?, phone_number = ? WHERE id = ?";
+
+        try (Connection connection = connect();
+             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+
+            prepStatement.setString(1, entry.name());
+            prepStatement.setString(2, entry.surName());
+            prepStatement.setInt(3, entry.phoneNumber());
+            prepStatement.setInt(4, entry.id());
+
+            prepStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    public static void updateAddressBook(AddressBookEntry entry) {
+        String sql = "UPDATE address_book SET name = ?, street = ?, number = ?, city = ?, postal_code = ?, country = ? WHERE id = ?";
+
+        try (Connection connection = connect();
+             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+
+            prepStatement.setString(1, entry.name());
+            prepStatement.setString(2, entry.street());
+            prepStatement.setInt(3, entry.number());
+            prepStatement.setString(4, entry.city());
+            prepStatement.setInt(5, entry.postalCode());
+            prepStatement.setString(6, entry.country());
+            prepStatement.setInt(7, entry.id());
+
+            prepStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    public static void updateNoteBook(NoteBookEntry entry) {
+        String sql = "UPDATE notebook SET title = ?, note = ? WHERE id = ?";
+
+        try (Connection connection = connect();
+             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+
+            prepStatement.setString(1, entry.title());
+            prepStatement.setString(2, entry.content());
+            prepStatement.setInt(3, entry.id());
+
+            prepStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    public static void updateScheduler(SchedulerEntry entry) {
+        String sql = "UPDATE scheduler SET title = ?, start_date = ?, end_date = ?, start_time = ?, end_time = ?, repetition = ?, number_of_repetition = ?, description = ? WHERE id = ?";
+
+        try (Connection connection = connect();
+             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+
+            prepStatement.setString(1, entry.title());
+            prepStatement.setString(2, entry.startDate().toString());
+            prepStatement.setString(3, entry.endDate().toString());
+            prepStatement.setString(4, entry.startTime().toString());
+            prepStatement.setString(5, entry.endTime().toString());
+            prepStatement.setString(6, entry.repetition().toString());
+            prepStatement.setInt(7, entry.numberOfRepetition());
+            prepStatement.setString(8, entry.description());
+            prepStatement.setInt(9, entry.id());
+
+            prepStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    public static void deletePhoneBookTuple(int id) {
+        String sql = "DELETE FROM phone_book WHERE id = ?";
+
+        try (Connection connection = connect();
+             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+
+            prepStatement.setInt(1, id);
+            prepStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    public static void deleteAddressBookTuple(int id) {
+        String sql = "DELETE FROM address_book WHERE id = ?";
+
+        try (Connection connection = connect();
+             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+
+            prepStatement.setInt(1, id);
+            prepStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    public static void deleteNoteBookTuple(int id) {
+        String sql = "DELETE FROM notebook WHERE id = ?";
+
+        try (Connection connection = connect();
+             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+
+            prepStatement.setInt(1, id);
+            prepStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    public static void deleteSchedulerTuple(int id) {
+        String sql = "DELETE FROM scheduler WHERE id = ?";
+
+        try (Connection connection = connect();
+             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+
+            prepStatement.setInt(1, id);
+            prepStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
+
 }

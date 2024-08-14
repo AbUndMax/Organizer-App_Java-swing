@@ -1,9 +1,9 @@
 package Organizer.Tabs.PhoneBookTab;
 
-public record PhoneBookEntry(Integer ID, String name, String surName, int phoneNumber) {
+public record PhoneBookEntry(Integer id, String name, String surName, int phoneNumber) {
     public PhoneBookEntry {
-        if (ID == null) {
-            throw new IllegalArgumentException("ID cannot be null");
+        if (id == null) {
+            throw new IllegalArgumentException("id cannot be null");
         }
     }
 }

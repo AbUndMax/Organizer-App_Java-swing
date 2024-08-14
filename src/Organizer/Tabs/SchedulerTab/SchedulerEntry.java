@@ -3,12 +3,12 @@ package Organizer.Tabs.SchedulerTab;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record SchedulerEntry (Integer ID, String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime,
-                           Repetition repetition, int numberOfRepetition, String description) {
+public record SchedulerEntry (Integer id, String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime,
+                              Repetition repetition, int numberOfRepetition, String description) {
 
     public SchedulerEntry {
-        if (ID == null) {
-            throw new IllegalArgumentException("ID cannot be null");
+        if (id == null) {
+            throw new IllegalArgumentException("id cannot be null");
         }
     }
 
