@@ -27,7 +27,7 @@ public enum Repetition {
         return array;
     }
 
-    public static Repetition StringToRepetition(String string) {
+    public static Repetition parse(String string) {
         switch (string) {
             case "NONE":
                 return NONE;

@@ -1,22 +1,54 @@
 package Organizer.Tools;
 
+import Organizer.Tabs.AddressBookTab.AddressBookEntry;
+import Organizer.Tabs.NoteBookTab.NoteBookEntry;
 import Organizer.Tabs.PhoneBookTab.PhoneBookEntry;
+import Organizer.Tabs.SchedulerTab.Repetition;
+import Organizer.Tabs.SchedulerTab.SchedulerEntry;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.LinkedList;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public class Database {
 
     private static final String DATABASE_URL = "jdbc:sqlite:database/organizer.sqlite";
+    private static final Logger LOGGER = LoggerFactory.getLogger(Database.class);
 
     private static Connection connect() {
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(DATABASE_URL);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return connection;
+    }
+
+    private static boolean isValidColumn(String table, String column) {
+        String sql = "PRAGMA table_info(" + table + ");";
+        boolean isValid = false;
+
+        try (Connection connection = connect();
+             Statement statement = connection.createStatement()) {
+
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while(resultSet.next()) {
+                if (resultSet.getString("name").equals(column)) {
+                    isValid = true;
+                    break;
+                }
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return isValid;
     }
 
     public static void createDatabase() {
@@ -64,8 +96,151 @@ public class Database {
             statement.execute(sqlScheduler);
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
+    }
+
+    public static LinkedList<PhoneBookEntry> searchInPhoneBook(String attribute, String searchQuery) {
+
+        if (!isValidColumn("phone_book", attribute)) {
+            throw new IllegalArgumentException("Invalid column name <" + attribute + "> for phone_book table.");
+        }
+
+        String sql = "SELECT * FROM scheduler WHERE " + attribute + " LIKE ?";
+        LinkedList<PhoneBookEntry> pbEntries = new LinkedList<>();
+
+        try (Connection connection = connect();
+             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+
+            prepStatement.setString(1, attribute);
+            prepStatement.setString(2, "%" + searchQuery + "%");
+
+            ResultSet resultSet = prepStatement.executeQuery();
+
+            while(resultSet.next()) {
+                PhoneBookEntry pbEntry = new PhoneBookEntry(
+                        resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("surname"),
+                        resultSet.getInt("phone_number")
+                );
+                pbEntries.add(pbEntry);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return pbEntries;
+    }
+
+    public static LinkedList<AddressBookEntry> searchInAddressBook(String attribute, String searchQuery) {
+
+        if (!isValidColumn("address_book", attribute)) {
+            throw new IllegalArgumentException("Invalid column name <" + attribute + "> for address_book table.");
+        }
+
+        String sql = "SELECT * FROM scheduler WHERE " + attribute + " LIKE ?";
+        LinkedList<AddressBookEntry> abEntries = new LinkedList<>();
+
+        try (Connection connection = connect();
+             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+
+            prepStatement.setString(1, attribute);
+            prepStatement.setString(2, "%" + searchQuery + "%");
+
+            ResultSet resultSet = prepStatement.executeQuery();
+
+            while(resultSet.next()) {
+                AddressBookEntry abEntry = new AddressBookEntry(
+                        resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("street"),
+                        resultSet.getInt("number"),
+                        resultSet.getString("city"),
+                        resultSet.getInt("postal_code"),
+                        resultSet.getString("country")
+                );
+                abEntries.add(abEntry);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return abEntries;
+    }
+
+    public static LinkedList<NoteBookEntry> searchInNoteBook(String attribute, String searchQuery) {
+
+        if (!isValidColumn("notebook", attribute)) {
+            throw new IllegalArgumentException("Invalid column name <" + attribute + "> for notebook table.");
+        }
+
+        String sql = "SELECT * FROM scheduler WHERE " + attribute + " LIKE ?";
+        LinkedList<NoteBookEntry> nbEntries = new LinkedList<>();
+
+        try (Connection connection = connect();
+             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+
+            prepStatement.setString(1, attribute);
+            prepStatement.setString(2, "%" + searchQuery + "%");
+
+            ResultSet resultSet = prepStatement.executeQuery();
+
+            while(resultSet.next()) {
+                NoteBookEntry nbEntry = new NoteBookEntry(
+                        resultSet.getInt("id"),
+                        resultSet.getString("title"),
+                        resultSet.getString("note")
+                );
+                nbEntries.add(nbEntry);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return nbEntries;
+    }
+
+    public static LinkedList<SchedulerEntry> searchInScheduler(String attribute, String searchQuery) {
+
+        if (!isValidColumn("scheduler", attribute)) {
+            throw new IllegalArgumentException("Invalid column name <" + attribute + "> for scheduler table.");
+        }
+
+        String sql = "SELECT * FROM scheduler WHERE " + attribute + " LIKE ?";
+        LinkedList<SchedulerEntry> sEntries = new LinkedList<>();
+
+        try (Connection connection = connect();
+             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+
+            prepStatement.setString(1, "%" + searchQuery + "%");
+
+            ResultSet resultSet = prepStatement.executeQuery();
+
+            while(resultSet.next()) {
+
+                SchedulerEntry sEntry = new SchedulerEntry(
+                        resultSet.getInt("id"),
+                        resultSet.getString("title"),
+                        LocalDate.parse(resultSet.getString("start_date")),
+                        LocalDate.parse(resultSet.getString("end_date")),
+                        LocalTime.parse(resultSet.getString("start_time")),
+                        LocalTime.parse(resultSet.getString("end_time")),
+                        Repetition.parse(resultSet.getString("repetition")),
+                        resultSet.getInt("number_of_repetition"),
+                        resultSet.getString("description")
+                );
+                sEntries.add(sEntry);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return sEntries;
     }
 
 }

@@ -1,6 +1,6 @@
 package Organizer.Tabs.AddressBookTab;
 
-public record AddressBookEntry(Integer ID, String name, String street, String number, String city, String postalCode, String country) {
+public record AddressBookEntry(Integer ID, String name, String street, int number, String city, int postalCode, String country) {
     public AddressBookEntry {
         if (ID == null) {
             throw new IllegalArgumentException("ID cannot be null");

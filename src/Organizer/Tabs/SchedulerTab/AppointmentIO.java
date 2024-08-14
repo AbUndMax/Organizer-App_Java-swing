@@ -53,7 +53,7 @@ public class AppointmentIO {
                 appointment.setEndTime(getLocalTime(endTime));
                 //read and set Repetition
                 line = bReader.readLine().substring(1);
-                Repetition repetition = Repetition.StringToRepetition(line);
+                Repetition repetition = Repetition.parse(line);
                 appointment.setRepetition(repetition);
                 //read and set number of repetitions
                 line = bReader.readLine().substring(1);
