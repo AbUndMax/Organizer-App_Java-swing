@@ -14,10 +14,6 @@ public class MainFrame extends JFrame {
     public static final ContactBook contactBook = new ContactBook();
     public static final NoteBook noteBookPane = new NoteBook();
     private static final Scheduler schedulerPane = new Scheduler();
-    private static final JMenuBar menuBar = new JMenuBar();
-    private static final JMenu IOMenu = new JMenu("menu");
-    private static final JMenuItem menuImport = new JMenuItem("import");
-    private static final JMenuItem menuExport = new JMenuItem("export");
 
     public MainFrame(){
         setTitle("Organizer");
