@@ -50,11 +50,11 @@ public class Database<T> {
                     + " id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
                     + " name TEXT,\n"
                     + " surname TEXT,\n"
-                    + " phone_number INTEGER,\n"
+                    + " phone_number TEXT,\n"
                     + " street TEXT,\n"
-                    + " number INTEGER,\n"
+                    + " number TEXT,\n"
                     + " city TEXT,\n"
-                    + " postal_code INTEGER,\n"
+                    + " postal_code TEXT,\n"
                     + " country TEXT\n"
                     + ");";
 

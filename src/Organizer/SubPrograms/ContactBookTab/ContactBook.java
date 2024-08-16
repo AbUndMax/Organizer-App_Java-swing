@@ -53,7 +53,7 @@ public class ContactBook extends JPanel {
             boolean anyNull = userInput == null || userInput.length == 0 || userInput[0] == null;
 
             if (!anyNull) {
-                ContactBookEntry newEntry = contactBook.newDBTuple(userInput[0], userInput[1], Integer.parseInt(userInput[2]), userInput[3], Integer.parseInt(userInput[4]), userInput[5], Integer.parseInt(userInput[6]), userInput[7]);
+                ContactBookEntry newEntry = contactBook.newDBTuple(userInput[0], userInput[1], userInput[2], userInput[3], userInput[4], userInput[5], userInput[6], userInput[7]);
                 ((ContactBookTableModel) table.getModel()).addContact(newEntry);
             }
         });
@@ -176,16 +176,17 @@ public class ContactBook extends JPanel {
             ContactBookEntry updatedContact = switch (columnIndex) {
                 case 0 -> new ContactBookEntry(contact.id(), (String) aValue, contact.surname(), contact.phoneNumber(), contact.street(), contact.houseNumber(), contact.city(), contact.postalCode(), contact.country());
                 case 1 -> new ContactBookEntry(contact.id(), contact.name(), (String) aValue, contact.phoneNumber(), contact.street(), contact.houseNumber(), contact.city(), contact.postalCode(), contact.country());
-                case 2 -> new ContactBookEntry(contact.id(), contact.name(), contact.surname(), (Integer) aValue, contact.street(), contact.houseNumber(), contact.city(), contact.postalCode(), contact.country());
+                case 2 -> new ContactBookEntry(contact.id(), contact.name(), contact.surname(), (String) aValue, contact.street(), contact.houseNumber(), contact.city(), contact.postalCode(), contact.country());
                 case 3 -> new ContactBookEntry(contact.id(), contact.name(), contact.surname(), contact.phoneNumber(), (String) aValue, contact.houseNumber(), contact.city(), contact.postalCode(), contact.country());
-                case 4 -> new ContactBookEntry(contact.id(), contact.name(), contact.surname(), contact.phoneNumber(), contact.street(), (Integer) aValue, contact.city(), contact.postalCode(), contact.country());
+                case 4 -> new ContactBookEntry(contact.id(), contact.name(), contact.surname(), contact.phoneNumber(), contact.street(), (String) aValue, contact.city(), contact.postalCode(), contact.country());
                 case 5 -> new ContactBookEntry(contact.id(), contact.name(), contact.surname(), contact.phoneNumber(), contact.street(), contact.houseNumber(), (String) aValue, contact.postalCode(), contact.country());
-                case 6 -> new ContactBookEntry(contact.id(), contact.name(), contact.surname(), contact.phoneNumber(), contact.street(), contact.houseNumber(), contact.city(), (Integer) aValue, contact.country());
+                case 6 -> new ContactBookEntry(contact.id(), contact.name(), contact.surname(), contact.phoneNumber(), contact.street(), contact.houseNumber(), contact.city(), (String) aValue, contact.country());
                 case 7 -> new ContactBookEntry(contact.id(), contact.name(), contact.surname(), contact.phoneNumber(), contact.street(), contact.houseNumber(), contact.city(), contact.postalCode(), (String) aValue);
                 default -> contact;
             };
 
             contacts.set(rowIndex, updatedContact);
+            contactBook.updateDB(updatedContact);
             fireTableCellUpdated(rowIndex, columnIndex);
         }
 

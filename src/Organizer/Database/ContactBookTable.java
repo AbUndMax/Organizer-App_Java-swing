@@ -84,11 +84,11 @@ public class ContactBookTable extends Database<ContactBookEntry> {
                     resultSet.getInt("id"),
                     resultSet.getString("name"),
                     resultSet.getString("surname"),
-                    resultSet.getInt("phone_number"),
+                    resultSet.getString("phone_number"),
                     resultSet.getString("street"),
-                    resultSet.getInt("number"),
+                    resultSet.getString("number"),
                     resultSet.getString("city"),
-                    resultSet.getInt("postal_code"),
+                    resultSet.getString("postal_code"),
                     resultSet.getString("country")
             );
             abEntries.add(abEntry);
@@ -97,7 +97,7 @@ public class ContactBookTable extends Database<ContactBookEntry> {
         return abEntries;
     }
 
-    public ContactBookEntry newDBTuple(String name, String surname, int phoneNumber, String street, int houseNumber, String city, int postalCode, String country) {
+    public ContactBookEntry newDBTuple(String name, String surname, String phoneNumber, String street, String houseNumber, String city, String postalCode, String country) {
         String sql = "INSERT INTO contact_book (name, surname, phone_number, street, number, city, postal_code, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         int id = -1;
         try (Connection connection = connect();
@@ -105,11 +105,11 @@ public class ContactBookTable extends Database<ContactBookEntry> {
 
             prepStatement.setString(1, name);
             prepStatement.setString(2, surname);
-            prepStatement.setInt(3, phoneNumber);
+            prepStatement.setString(3, phoneNumber);
             prepStatement.setString(4, street);
-            prepStatement.setInt(5, houseNumber);
+            prepStatement.setString(5, houseNumber);
             prepStatement.setString(6, city);
-            prepStatement.setInt(7, postalCode);
+            prepStatement.setString(7, postalCode);
             prepStatement.setString(8, country);
 
             // Ausführen des Insert-Statements
@@ -140,11 +140,11 @@ public class ContactBookTable extends Database<ContactBookEntry> {
 
             prepStatement.setString(1, entry.name());
             prepStatement.setString(2, entry.surname());
-            prepStatement.setInt(3, entry.phoneNumber());
+            prepStatement.setString(3, entry.phoneNumber());
             prepStatement.setString(4, entry.street());
-            prepStatement.setInt(5, entry.houseNumber());
+            prepStatement.setString(5, entry.houseNumber());
             prepStatement.setString(6, entry.city());
-            prepStatement.setInt(7, entry.postalCode());
+            prepStatement.setString(7, entry.postalCode());
             prepStatement.setString(8, entry.country());
             prepStatement.setInt(9, entry.id());
 
