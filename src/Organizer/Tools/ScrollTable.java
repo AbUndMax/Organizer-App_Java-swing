@@ -10,7 +10,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +17,6 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
 
 public class ScrollTable extends JPanel {
 
@@ -31,9 +29,9 @@ public class ScrollTable extends JPanel {
     private final JComboBox columnChooser = new JComboBox();
     private final JButton newEntry = new JButton("new entry");
     private final JButton delEntry = new JButton("delete selected entry");
-
     private ArrayList<String[]> tableContent;
     private Runnable writeToFileFunction;
+
     private final ActionListener delEntryListener = e -> {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) { // checks rather a row is selected or not
@@ -43,6 +41,7 @@ public class ScrollTable extends JPanel {
         }
         writeToFileFunction.run();
     };
+
     private final ActionListener newEntryListener = e -> {
         String[] userInput = new String[colNames.length];
         new NewTableEntryDialog(colNames, userInput);
@@ -97,7 +96,7 @@ public class ScrollTable extends JPanel {
         searchBarPane.add(columnChooser);
         searchBarPane.add(Box.createHorizontalStrut(10));
 
-        searchBar.getDocument().addDocumentListener(new SearchBarList());
+        searchBar.getDocument().addDocumentListener(new SearchBarListener());
         delEntry.addActionListener(delEntryListener);
         newEntry.addActionListener(newEntryListener);
 
@@ -155,7 +154,7 @@ public class ScrollTable extends JPanel {
         }
     }
 
-    class SearchBarList implements DocumentListener {
+    class SearchBarListener implements DocumentListener {
         public void changedUpdate(DocumentEvent e) {
             reactToSearchBar();
         }

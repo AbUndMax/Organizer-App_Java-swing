@@ -1,4 +1,4 @@
-package Organizer.Tabs.NoteBookTab;
+package Organizer.SubPrograms.NoteBookTab;
 
 public record NoteBookEntry(Integer id, String title, String content) {
     public NoteBookEntry {

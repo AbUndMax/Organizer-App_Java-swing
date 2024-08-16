@@ -1,4 +1,4 @@
-package Organizer.Tabs.SchedulerTab;
+package Organizer.SubPrograms.SchedulerTab;
 
 import java.time.LocalDate;
 import java.time.Month;

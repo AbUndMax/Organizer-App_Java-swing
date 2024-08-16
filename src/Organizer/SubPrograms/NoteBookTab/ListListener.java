@@ -1,4 +1,4 @@
-package Organizer.Tabs.NoteBookTab;
+package Organizer.SubPrograms.NoteBookTab;
 
 import Organizer.Frames.MainFrame;
 

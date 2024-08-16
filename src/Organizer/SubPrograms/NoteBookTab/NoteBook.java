@@ -1,7 +1,6 @@
-package Organizer.Tabs.NoteBookTab;
+package Organizer.SubPrograms.NoteBookTab;
 
 import Organizer.Frames.MainFrame;
-import Organizer.Main;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package Organizer.Tabs.SchedulerTab;
+package Organizer.SubPrograms.SchedulerTab;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;

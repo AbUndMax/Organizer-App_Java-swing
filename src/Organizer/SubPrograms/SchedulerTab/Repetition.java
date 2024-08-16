@@ -1,4 +1,4 @@
-package Organizer.Tabs.SchedulerTab;
+package Organizer.SubPrograms.SchedulerTab;
 
 public enum Repetition {
     NONE,

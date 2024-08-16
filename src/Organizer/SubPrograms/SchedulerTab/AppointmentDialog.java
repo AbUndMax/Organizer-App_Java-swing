@@ -1,4 +1,4 @@
-package Organizer.Tabs.SchedulerTab;
+package Organizer.SubPrograms.SchedulerTab;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,7 +12,7 @@ import java.time.Month;
 import java.time.Year;
 import java.time.temporal.ChronoUnit;
 
-import static Organizer.Tabs.SchedulerTab.Repetition.NONE;
+import static Organizer.SubPrograms.SchedulerTab.Repetition.NONE;
 
 public class AppointmentDialog extends JDialog {
 

@@ -1,7 +1,7 @@
 package Organizer;
 
 import Organizer.Frames.MainFrame;
-import Organizer.Tools.Database;
+import Organizer.Database.Database;
 
 public class Main {
 

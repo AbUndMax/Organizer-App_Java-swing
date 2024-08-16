@@ -1,4 +1,4 @@
-package Organizer.Tabs.SchedulerTab;
+package Organizer.SubPrograms.SchedulerTab;
 
 import java.io.*;
 import java.time.LocalDate;
