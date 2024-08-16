@@ -98,7 +98,7 @@ public class ContactBookTable extends Database<ContactBookEntry> {
     }
 
     public ContactBookEntry newDBTuple(String name, String surname, int phoneNumber, String street, int houseNumber, String city, int postalCode, String country) {
-        String sql = "INSERT INTO address_book (name, surname, phone_number, street, number, city, postal_code, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO contact_book (name, surname, phone_number, street, number, city, postal_code, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         int id = -1;
         try (Connection connection = connect();
              PreparedStatement prepStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -133,7 +133,7 @@ public class ContactBookTable extends Database<ContactBookEntry> {
     }
 
     public void updateDB(ContactBookEntry entry) {
-        String sql = "UPDATE address_book SET name = ?, surname = ?, phone_number = ?, street = ?, number = ?, city = ?, postal_code = ?, country = ? WHERE id = ?";
+        String sql = "UPDATE contact_book SET name = ?, surname = ?, phone_number = ?, street = ?, number = ?, city = ?, postal_code = ?, country = ? WHERE id = ?";
 
         try (Connection connection = connect();
              PreparedStatement prepStatement = connection.prepareStatement(sql)) {
@@ -156,7 +156,7 @@ public class ContactBookTable extends Database<ContactBookEntry> {
     }
 
     public void deleteDBTuple(int id) {
-        String sql = "DELETE FROM address_book WHERE id = ?";
+        String sql = "DELETE FROM contact_book WHERE id = ?";
 
         try (Connection connection = connect();
              PreparedStatement prepStatement = connection.prepareStatement(sql)) {
