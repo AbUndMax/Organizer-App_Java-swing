@@ -4,30 +4,27 @@ The Organizer-Application consists of 4 subprograms:
 
 <table>
     <tr>
-        <td><p style="text-align: center"><strong>Phone-Book</strong></p></td>
-        <td><p style="text-align: center"><strong>Address-Book</strong></p></td>
+        <td style="text-align: center;"><strong>Contact-Book</strong></td>
+        <td style="text-align: center;"><strong>Note-Book</strong></td>
     </tr>
     <tr>
-        <td><img src="Images/Phone-Book_Frame.png"></td>
-        <td><img src="Images/Address-Book_Frame.png"></td>
+        <td style="text-align: center;"><img src="Images/ContactBook_Frame.png" alt="ContactBook Frame"></td>
+        <td style="text-align: center;"><img src="Images/Note-Book_Frame.png" alt="Note-Book Frame"></td>
     </tr>
     <tr>
-        <td><img src="Images/new-Phone-Entry_Dialog.png"></td>
-        <td><img src="Images/new-address-entry_Dialog.png"></td>
+        <td rowspan="2" style="text-align: center;"><img src="Images/new-contact-entry-Dialog.png" alt="New Contact Entry Dialog"></td>
+        <td style="text-align: center;"><img src="Images/saved_Dialog.png" alt="Saved Dialog"></td>
     </tr>
     <tr>
-        <td><p style="text-align: center"><strong>Note-Book</strong></p></td>
-        <td><p style="text-align: center"><strong>Scheduler</strong></p></td>
+        <td style="text-align: center;"><img src="Images/deletion-confirmation_Dialog.png" alt="Deletion Confirmation Dialog"></td>
     </tr>
     <tr>
-        <td><img src="Images/Note-Book_Frame.png"></td>
-        <td><img src="Images/Scheduler_Frame.png"></td>
+        <td colspan="2" style="text-align: center;"><strong>Scheduler</strong></td>
     </tr>
     <tr>
-        <td><img src="Images/saved_Dialog.png"></td>
-        <td rowspan="2"><img src="Images/Appointment_Dialog.png"></td>
+        <td colspan="2" style="text-align: center;"><img src="Images/Scheduler_Frame.png" alt="Scheduler Frame"></td>
     </tr>
     <tr>
-        <td> <img src="Images/deletion-confirmation_Dialog.png"> </td>
+        <td colspan="2" style="text-align: center;"><img src="Images/Appointment_Dialog.png" alt="Appointment Dialog"></td>
     </tr>
 </table>

@@ -27,7 +27,14 @@ public class NoteBook extends JSplitPane {
             return label;
         });
 
-        // addListSelectionListener();
+        addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                NoteBookEntry entry = getSelectedValue();
+                if (entry != null) {
+                    textArea.setText(NoteBookTable.getNoteContent(entry.id()));
+                }
+            }
+        });
     }};
 
     //TODO: Action Listeners

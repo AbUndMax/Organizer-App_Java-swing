@@ -26,29 +26,26 @@ public class NoteBookTable extends Database<NoteBookEntry> {
         return nbEntries;
     }
 
-    public static LinkedList<NoteBookEntry> searchInDB(String attribute, String searchQuery) {
-
-        if (!isValidColumn("notebook", attribute)) {
-            throw new IllegalArgumentException("Invalid column name <" + attribute + "> for notebook table.");
-        }
-
-        String sql = "SELECT * FROM scheduler WHERE " + attribute + " LIKE ?";
-        LinkedList<NoteBookEntry> nbEntries = new LinkedList<>();
+    public static String getNoteContent(int id) {
+        String sql = "SELECT note FROM notebook WHERE id = ?";
+        String content = "";
 
         try (Connection connection = connect();
              PreparedStatement prepStatement = connection.prepareStatement(sql)) {
 
-            prepStatement.setString(1, "%" + searchQuery + "%");
+            prepStatement.setInt(1, id);
 
             ResultSet resultSet = prepStatement.executeQuery();
 
-            nbEntries = resultToObject(resultSet);
+            if (resultSet.next()) {
+                content = resultSet.getString("note");
+            }
 
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
         }
 
-        return nbEntries;
+        return content;
     }
 
     private static LinkedList<NoteBookEntry> resultToObject(ResultSet resultSet) throws SQLException {
