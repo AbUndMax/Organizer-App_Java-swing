@@ -1,6 +1,6 @@
 package Organizer.SubPrograms.NoteBookTab;
 
-public record NoteBookEntry(Integer id, String title, String content) {
+public record NoteBookEntry(Integer id, String title) {
     public NoteBookEntry {
         if (id == null) {
             throw new IllegalArgumentException("id cannot be null");

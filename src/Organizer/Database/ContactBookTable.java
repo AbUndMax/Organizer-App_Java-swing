@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 public class ContactBookTable extends Database<ContactBookEntry> {
 
-    public LinkedList<ContactBookEntry> loadFullTable() {
+    public static LinkedList<ContactBookEntry> loadFullTable() {
         LinkedList<ContactBookEntry> abEntries = new LinkedList<>();
 
         try (Connection connection = connect();
@@ -25,7 +25,7 @@ public class ContactBookTable extends Database<ContactBookEntry> {
         return abEntries;
     }
 
-    public LinkedList<ContactBookEntry> searchInDB(String attribute, String searchQuery) {
+    public static LinkedList<ContactBookEntry> searchInDB(String attribute, String searchQuery) {
 
         switch (attribute) {
             case "Name":
@@ -77,7 +77,7 @@ public class ContactBookTable extends Database<ContactBookEntry> {
         return abEntries;
     }
 
-    private LinkedList<ContactBookEntry> resultToObject(ResultSet resultSet) throws SQLException {
+    private static LinkedList<ContactBookEntry> resultToObject(ResultSet resultSet) throws SQLException {
         LinkedList<ContactBookEntry> abEntries = new LinkedList<>();
         while(resultSet.next()) {
             ContactBookEntry abEntry = new ContactBookEntry(
@@ -97,7 +97,7 @@ public class ContactBookTable extends Database<ContactBookEntry> {
         return abEntries;
     }
 
-    public ContactBookEntry newDBTuple(String name, String surname, String phoneNumber, String street, String houseNumber, String city, String postalCode, String country) {
+    public static ContactBookEntry newDBTuple(String name, String surname, String phoneNumber, String street, String houseNumber, String city, String postalCode, String country) {
         String sql = "INSERT INTO contact_book (name, surname, phone_number, street, number, city, postal_code, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         int id = -1;
         try (Connection connection = connect();
@@ -115,9 +115,9 @@ public class ContactBookTable extends Database<ContactBookEntry> {
             // Ausführen des Insert-Statements
             int affectedRows = prepStatement.executeUpdate();
 
-            // Überprüfen, ob ein Datensatz eingefügt wurde
+            // check for valid change
             if (affectedRows > 0) {
-                // Abrufen der generierten ID
+                // call the ID
                 try (ResultSet rs = prepStatement.getGeneratedKeys()) {
                     if (rs.next()) {
                         id = rs.getInt(1);
@@ -132,7 +132,7 @@ public class ContactBookTable extends Database<ContactBookEntry> {
         return new ContactBookEntry(id, name, surname, phoneNumber, street, houseNumber, city, postalCode, country);
     }
 
-    public void updateDB(ContactBookEntry entry) {
+    public static void updateDB(ContactBookEntry entry) {
         String sql = "UPDATE contact_book SET name = ?, surname = ?, phone_number = ?, street = ?, number = ?, city = ?, postal_code = ?, country = ? WHERE id = ?";
 
         try (Connection connection = connect();
@@ -155,7 +155,7 @@ public class ContactBookTable extends Database<ContactBookEntry> {
         }
     }
 
-    public void deleteDBTuple(int id) {
+    public static void deleteDBTuple(int id) {
         String sql = "DELETE FROM contact_book WHERE id = ?";
 
         try (Connection connection = connect();

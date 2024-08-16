@@ -13,7 +13,7 @@ import java.util.LinkedList;
 
 public class SchedulerTable extends Database<SchedulerEntry> {
 
-    public LinkedList<SchedulerEntry> searchInDB(String attribute, String searchQuery) {
+    public static LinkedList<SchedulerEntry> searchInDB(String attribute, String searchQuery) {
 
         if (!isValidColumn("scheduler", attribute)) {
             throw new IllegalArgumentException("Invalid column name <" + attribute + "> for scheduler table.");
@@ -52,7 +52,7 @@ public class SchedulerTable extends Database<SchedulerEntry> {
         return sEntries;
     }
 
-    public void updateDB(SchedulerEntry entry) {
+    public static void updateDB(SchedulerEntry entry) {
         String sql = "UPDATE scheduler SET title = ?, start_date = ?, end_date = ?, start_time = ?, end_time = ?, repetition = ?, number_of_repetition = ?, description = ? WHERE id = ?";
 
         try (Connection connection = connect();
@@ -75,7 +75,7 @@ public class SchedulerTable extends Database<SchedulerEntry> {
         }
     }
 
-    public void deleteDBTuple(int id) {
+    public static void deleteDBTuple(int id) {
         String sql = "DELETE FROM scheduler WHERE id = ?";
 
         try (Connection connection = connect();
