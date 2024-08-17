@@ -51,5 +51,7 @@ public class NewNoteDialog extends JDialog {
             NoteBookEntry newEntry = NoteBookTable.newDBTuple(getNoteName.getText(), "");
             listModel.addElement(newEntry);
         }
+
+        this.dispose();
     }
 }

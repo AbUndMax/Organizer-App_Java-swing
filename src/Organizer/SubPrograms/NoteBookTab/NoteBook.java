@@ -8,9 +8,6 @@ import java.awt.*;
 public class NoteBook extends JSplitPane {
 
     private final JTextArea textArea = new JTextArea();
-    private final JScrollPane textScrollPane = new JScrollPane() {{
-        setViewportView(textArea);
-    }};
 
     private final DefaultListModel<NoteBookEntry> listModel = new DefaultListModel<>();
     private final JList<NoteBookEntry> noteTitleList = new JList<>(listModel) {{
@@ -37,31 +34,33 @@ public class NoteBook extends JSplitPane {
         });
     }};
 
-    //TODO: Action Listeners
     private final JButton newFileButton = new JButton("create new Note") {{
         addActionListener(e -> {
-
+            new NewNoteDialog(listModel);
         });
     }};
 
     private final JButton saveButton = new JButton("save changes") {{
         addActionListener(e -> {
-
+            NoteBookTable.updateDB(noteTitleList.getSelectedValue(), textArea.getText());
         });
     }};
 
     private final JButton deleteFileButton = new JButton("delete Note") {{
         addActionListener(e -> {
-
+            NoteBookTable.deleteDBTuple(noteTitleList.getSelectedValue().id());
+            listModel.removeElementAt(noteTitleList.getSelectedIndex());
+            noteTitleList.setSelectedIndex(0);
         });
     }};
 
     public NoteBook () {
     setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+    JScrollPane textScrollPane = new JScrollPane();
+    textScrollPane.setViewportView(textArea);
 
     setLeftComponent(setupListPane());
     setRightComponent(textScrollPane);
-
     }
 
     private JPanel setupListPane(){
