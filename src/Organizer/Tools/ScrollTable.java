@@ -1,5 +1,7 @@
 package Organizer.Tools;
 
+import Organizer.SubPrograms.ContactBookTab.NewContactDialog;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -44,7 +46,7 @@ public class ScrollTable extends JPanel {
 
     private final ActionListener newEntryListener = e -> {
         String[] userInput = new String[colNames.length];
-        new NewTableEntryDialog(colNames, userInput);
+        new NewContactDialog(colNames, userInput);
 
         boolean anyNull = Arrays.stream(userInput).anyMatch(Objects::isNull);
 

@@ -1,7 +1,6 @@
 package Organizer.SubPrograms.ContactBookTab;
 
 import Organizer.Database.ContactBookTable;
-import Organizer.Tools.NewTableEntryDialog;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -48,7 +47,7 @@ public class ContactBook extends JPanel {
     private final JButton newEntryButton = new JButton("new entry") {{
         addActionListener( e -> {
             String[] userInput = new String[colNames.length];
-            new NewTableEntryDialog(colNames, userInput);
+            new NewContactDialog(colNames, userInput);
 
             boolean anyNull = userInput == null || userInput.length == 0 || userInput[0] == null;
 

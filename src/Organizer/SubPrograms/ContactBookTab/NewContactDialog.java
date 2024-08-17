@@ -1,11 +1,11 @@
-package Organizer.Tools;
+package Organizer.SubPrograms.ContactBookTab;
 
 import Organizer.Main;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class NewTableEntryDialog extends JDialog {
+public class NewContactDialog extends JDialog {
 
     private final JLabel[] labels;
     private final JTextField[] fields;
@@ -13,7 +13,7 @@ public class NewTableEntryDialog extends JDialog {
     private final JButton closeButton = new JButton("close");
     private final String[] userInput;
 
-    public NewTableEntryDialog(String[] fieldNames, String[] userInput) {
+    public NewContactDialog(String[] fieldNames, String[] userInput) {
         setLocationRelativeTo(Main.mainFrame);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setResizable(true);
