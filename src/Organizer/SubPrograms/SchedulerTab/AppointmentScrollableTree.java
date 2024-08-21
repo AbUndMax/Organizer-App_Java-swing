@@ -1,21 +1,22 @@
 package Organizer.SubPrograms.SchedulerTab;
 
+import Organizer.Database.SchedulerTable;
+
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
+import java.time.LocalDate;
 import java.time.Month;
-import java.time.Year;
-import java.util.HashMap;
-import java.util.TreeSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class AppointmentScrollableTree extends JScrollPane {
 
-    private AppointmentCollection appointmentCollection;
-    private HashMap<Year, TreeSet<Appointment>[][]> appointmentMap;
     private final Scheduler motherPane;
 
-    private final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Years");
+    private final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Appointments");
     private final DefaultTreeModel treeModel = new DefaultTreeModel(root);
     private final JTree tree = new JTree(treeModel);
     private final TreeSelectionListener listener = new TreeSelectionListener() {
@@ -25,8 +26,8 @@ public class AppointmentScrollableTree extends JScrollPane {
                 DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
                 if (selectedNode != null && selectedNode.isLeaf()) {
                     // Führen Sie hier die Aktionen aus, die Sie durchführen möchten, wenn ein Knoten ausgewählt wird.
-                    Appointment appointment = (Appointment) selectedNode.getUserObject();
-                    AppointmentDialog dialog = new AppointmentDialog(motherPane, appointmentCollection, appointment);
+                    SchedulerEntry schedulerEntry = (SchedulerEntry) selectedNode.getUserObject();
+                    AppointmentDialog dialog = new AppointmentDialog(motherPane, schedulerEntry);
                     dialog.setVisible(true);
                 }
             }
@@ -35,9 +36,7 @@ public class AppointmentScrollableTree extends JScrollPane {
         }
     };
 
-    public AppointmentScrollableTree(AppointmentCollection appointmentCollection, Scheduler motherPane) {
-        this.appointmentCollection = appointmentCollection;
-        this.appointmentMap = appointmentCollection.getAppointmentMap();
+    public AppointmentScrollableTree(Scheduler motherPane) {
         this.motherPane = motherPane;
 
         DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
@@ -53,37 +52,59 @@ public class AppointmentScrollableTree extends JScrollPane {
     }
 
     private void populateTree() {
-        // Populate the tree (add all existing Appointments in the appointmentMap to
-        for (Year year : appointmentMap.keySet()) {
-            DefaultMutableTreeNode yearNode = new DefaultMutableTreeNode(year);
+
+        LinkedList<SchedulerEntry> schedulerEntries = SchedulerTable.loadFullTable();
+
+        TreeMap<Integer, TreeMap<Month, TreeMap<Integer, DefaultMutableTreeNode>>> yearMap = new TreeMap<>();
+
+        for (SchedulerEntry schedulerEntry : schedulerEntries) {
+            int year = schedulerEntry.getStartDate().getYear();
+            Month month = schedulerEntry.getStartDate().getMonth();
+            int day = schedulerEntry.getStartDate().getDayOfMonth();
+
+            // Erstellen oder Abrufen der Tages-Map für den Monat und das Jahr
+            yearMap.computeIfAbsent(year, y -> new TreeMap<>())
+                    .computeIfAbsent(month, m -> new TreeMap<>())
+                    .computeIfAbsent(day, d -> new DefaultMutableTreeNode(day))
+                    .add(new DefaultMutableTreeNode(schedulerEntry));
+        }
+
+        // Hinzufügen der sortierten Jahr-, Monats- und Tagesknoten zum Baum
+        for (Map.Entry<Integer, TreeMap<Month, TreeMap<Integer, DefaultMutableTreeNode>>> yearEntry : yearMap.entrySet()) {
+            DefaultMutableTreeNode yearNode = new DefaultMutableTreeNode(yearEntry.getKey());
             root.add(yearNode);
 
-            for (int m = 0; m < 12; m++) {
-                Month month = Month.of(m + 1);
-                //if month doesn't have any appointments skip
-                if (!appointmentCollection.monthHasAppointments(year, month)) continue;
-                DefaultMutableTreeNode monthNode = new DefaultMutableTreeNode(month);
+            for (Map.Entry<Month, TreeMap<Integer, DefaultMutableTreeNode>> monthEntry : yearEntry.getValue().entrySet()) {
+                String monthName = getMonthName(monthEntry.getKey());
+                DefaultMutableTreeNode monthNode = new DefaultMutableTreeNode(monthName);
                 yearNode.add(monthNode);
 
-                for (int d = 0; d < month.length(year.isLeap()); d++) {
-                    Integer dayValue = d + 1;
-                    // if day doesn't have any appointments skip
-                    if (appointmentCollection.dayHasAppointments(year, month, dayValue)) continue;
-                    String dayName = month.toString().substring(0, 3).toLowerCase() + " " + dayValue + ".";
-                    DefaultMutableTreeNode dayNode = new DefaultMutableTreeNode(dayName);
-                    monthNode.add(dayNode);
-
-                    for (Appointment appointment : appointmentMap.get(year)[m][d]) {
-                        DefaultMutableTreeNode appointmentNode = new DefaultMutableTreeNode(appointment);
-                        dayNode.add(appointmentNode);
-                    }
+                for (Map.Entry<Integer, DefaultMutableTreeNode> dayEntry : monthEntry.getValue().entrySet()) {
+                    monthNode.add(dayEntry.getValue());
                 }
             }
         }
 
-        expandTree();
+        expandCurrentYearAndMonth();
+    }
 
-        tree.setRootVisible(false);
+    // Methode zur Umwandlung eines Month-Objekts in einen formatierten Monatsnamen
+    private String getMonthName(Month month) {
+        return month.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.getDefault());
+    }
+
+    // Hilfsmethode zum Suchen oder Erstellen eines Knotens
+    private DefaultMutableTreeNode findOrCreateNode(DefaultMutableTreeNode parent, Object userObject) {
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) parent.getChildAt(i);
+            if (childNode.getUserObject().equals(userObject)) {
+                return childNode;
+            }
+        }
+
+        DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(userObject);
+        parent.add(newNode);
+        return newNode;
     }
 
     public void actualizeAppointmentScrollTree() {
@@ -92,13 +113,39 @@ public class AppointmentScrollableTree extends JScrollPane {
         root.removeAllChildren();
         populateTree();
         treeModel.reload();
-        expandTree();
+        expandCurrentYearAndMonth();
         tree.addTreeSelectionListener(listener);
     }
 
-    private void expandTree() {
-        for (int i = 0; i < tree.getRowCount(); i++) {
-            tree.expandRow(i);
+    private void expandCurrentYearAndMonth() {
+        LocalDate today = LocalDate.now();
+        int currentYear = today.getYear();
+        String currentMonth = today.getMonth().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.getDefault());
+
+        DefaultMutableTreeNode yearNode = findChildNode(root, currentYear);
+        if (yearNode != null) {
+            tree.expandPath(new TreePath(yearNode.getPath()));  // Jahrknoten ausklappen
+
+            DefaultMutableTreeNode monthNode = findChildNode(yearNode, currentMonth);
+            if (monthNode != null) {
+                tree.expandPath(new TreePath(monthNode.getPath()));  // Monatsknoten ausklappen
+
+                // Alle Tage des aktuellen Monats ausklappen
+                for (int i = 0; i < monthNode.getChildCount(); i++) {
+                    TreeNode dayNode = monthNode.getChildAt(i);
+                    tree.expandPath(new TreePath(((DefaultMutableTreeNode) dayNode).getPath()));
+                }
+            }
         }
+    }
+
+    private static DefaultMutableTreeNode findChildNode(DefaultMutableTreeNode parent, Object userObject) {
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) parent.getChildAt(i);
+            if (childNode.getUserObject().equals(userObject)) {
+                return childNode;
+            }
+        }
+        return null;
     }
 }

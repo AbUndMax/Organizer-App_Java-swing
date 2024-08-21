@@ -5,25 +5,21 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
-import java.util.TreeSet;
 
 public class Scheduler extends JSplitPane {
 
     private final LocalDate currentDate = LocalDate.now();
-    private final AppointmentCollection appointmentCollection = new AppointmentCollection();
-    private final JComboBox<Year> yearChooser = new JComboBox();
-    private final JComboBox<Month> monthChooser = new JComboBox();
+    private final JComboBox<Year> yearChooser = new JComboBox<>();
+    private final JComboBox<Month> monthChooser = new JComboBox<>();
     private final JPanel rightSpacePane = new JPanel(new BorderLayout());
     private MonthPanel currentMonthPane;
-    private final AppointmentScrollableTree scrollTree = new AppointmentScrollableTree(appointmentCollection, this);
+    private final AppointmentScrollableTree scrollTree = new AppointmentScrollableTree(this);
 
     public Scheduler() {
         setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 
         setLeftComponent(leftPane());
         setRightComponent(rightPane());
-
-
     }
 
     // in the left Split Pane we have the Appointment - List view component and the appointment control buttons
@@ -134,10 +130,7 @@ public class Scheduler extends JSplitPane {
         Year yearToCreate = (Year) yearChooser.getSelectedItem();
         Month monthToCreate = (Month) monthChooser.getSelectedItem();
 
-        TreeSet<Appointment>[] appointmentsOfThisMonth = appointmentCollection.getAppointmentsOfMonth(yearToCreate,
-                                                                                                      monthToCreate);
-
-        currentMonthPane = new MonthPanel(yearToCreate, monthToCreate, appointmentsOfThisMonth, this, appointmentCollection);
+        currentMonthPane = new MonthPanel(yearToCreate, monthToCreate, this);
 
         return (currentMonthPane);
     }
@@ -147,7 +140,7 @@ public class Scheduler extends JSplitPane {
     // #################################                 #################################
 
     private void newAppointmentHandler() {
-        AppointmentDialog appointmentDialog = new AppointmentDialog(this, appointmentCollection, null);
+        AppointmentDialog appointmentDialog = new AppointmentDialog(this, null);
         appointmentDialog.setVisible(true);
     }
 

@@ -1,5 +1,7 @@
 package Organizer.SubPrograms.SchedulerTab;
 
+import Organizer.Database.SchedulerTable;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -16,8 +18,7 @@ import static Organizer.SubPrograms.SchedulerTab.Repetition.NONE;
 
 public class AppointmentDialog extends JDialog {
 
-    private final AppointmentCollection collection;
-    private final Appointment initialAppointment;
+    private SchedulerEntry schedulerEntry;
     private final boolean isNewAppointment;
     private final Scheduler motherPane;
 
@@ -67,64 +68,61 @@ public class AppointmentDialog extends JDialog {
         return LocalTime.of(endHoursCBox.getSelectedIndex(), endMinutesCBox.getSelectedIndex());
     }
 
-    private Appointment getNewAppointment() {
+    private void fillUserInputIntoEntry() {
+
         String title = titleField.getText();
         Repetition repetition = (Repetition) repetitionCBox.getSelectedItem();
         int numberOfRepetitions = (int) numberOfRepetitionsSpinner.getValue();
         String description = descriptionArea.getText();
 
-        Appointment appointment = new Appointment(title, currentStartDate(), currentEndDate(), currentStartTime(),
-                                                  currentEndTime(), repetition, numberOfRepetitions, description);
-
-        return appointment;
+        schedulerEntry.setTitle(title);
+        schedulerEntry.setStartDate(currentStartDate());
+        schedulerEntry.setEndDate(currentEndDate());
+        schedulerEntry.setStartTime(currentStartTime());
+        schedulerEntry.setEndTime(currentEndTime());
+        schedulerEntry.setRepetition(repetition);
+        schedulerEntry.setNumberOfRepetition(numberOfRepetitions);
+        schedulerEntry.setDescription(description);
     }
 
-    private void saveAppointment() {
-        Appointment appointment = getNewAppointment();
-        collection.addAppointment(appointment);
-    }
-
-    public AppointmentDialog(Scheduler motherPane, AppointmentCollection collection, Appointment appointment) {
+    public AppointmentDialog(Scheduler motherPane, SchedulerEntry schedulerEntry) {
         setSize(400, 310);
         setLocationRelativeTo(motherPane);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setResizable(false);
         setModal(true);
 
-        this.collection = collection;
-        this.initialAppointment = appointment;
         this.motherPane = motherPane;
 
-        if (appointment == null) {
+        if (schedulerEntry == null) {
             this.isNewAppointment = true;
-
             setTitle("new Appointment");
+
             this.title = "Title";
             this.startDate = LocalDate.now();
             this.endDate = LocalDate.now();
             this.startTime = LocalTime.now();
-            this.endTime = LocalTime.now();
+            this.endTime = LocalTime.now().plusHours(1);
             this.repetition = NONE;
             this.numberOfRepetitions = 0;
             this.description = "Appointment Description";
 
-            endHoursCBox = newHourComboBox(endTime.plusHours(1));
-        }
-        else {
+        } else {
             this.isNewAppointment = false;
-
+            this.schedulerEntry = schedulerEntry;
+            SchedulerTable.loadFullEntry(schedulerEntry);
             setTitle("edit Appointment");
-            this.title = appointment.getTitle();
-            this.startDate = appointment.getStartDate();
-            this.endDate = appointment.getEndDate();
-            this.startTime = appointment.getStartTime();
-            this.endTime = appointment.getEndTime();
-            this.repetition = appointment.getRepetition();
-            this.numberOfRepetitions = appointment.getNumberOfRepetition();
-            this.description = appointment.getDescription();
 
-            endHoursCBox = newHourComboBox(endTime);
+            this.title = schedulerEntry.getTitle();
+            this.startDate = schedulerEntry.getStartDate();
+            this.endDate = schedulerEntry.getEndDate();
+            this.startTime = schedulerEntry.getStartTime();
+            this.endTime = schedulerEntry.getEndTime();
+            this.repetition = schedulerEntry.getRepetition();
+            this.numberOfRepetitions = schedulerEntry.getNumberOfRepetition();
+            this.description = schedulerEntry.getDescription();
         }
+
 
         startYearCBox = newYearComboBox(startDate, Year.of(1999));
         startYearCBox.addItemListener(this::startBoxHandler);
@@ -140,6 +138,7 @@ public class AppointmentDialog extends JDialog {
         endDayCBox.addActionListener(e -> addItemsToRepetitionChooser());
         startHoursCBox = newHourComboBox(startTime);
         startMinutesCBox = newMinuteComboBox(startTime);
+        endHoursCBox = newHourComboBox(endTime);
         endMinutesCBox = newMinuteComboBox(endTime);
         deleteButton.addActionListener(e -> deleteAppointmentHandler());
         saveButton.addActionListener(e -> saveAppointmentHandler());
@@ -584,7 +583,7 @@ public class AppointmentDialog extends JDialog {
         addItemsToRepetitionChooser();
     }
 
-    private ItemListener[] removeAllComboListeners(JComboBox comboBox) {
+    private ItemListener[] removeAllComboListeners(JComboBox<?> comboBox) {
         ItemListener[] itemListeners = comboBox.getItemListeners();
 
         for (ItemListener itemListener : itemListeners) {
@@ -594,7 +593,7 @@ public class AppointmentDialog extends JDialog {
         return itemListeners;
     }
 
-    private void addAllComboListeners(ItemListener[] listenerList, JComboBox comboBox) {
+    private void addAllComboListeners(ItemListener[] listenerList, JComboBox<?> comboBox) {
         for (ItemListener itemListener : listenerList) {
             comboBox.addItemListener(itemListener);
         }
@@ -605,7 +604,7 @@ public class AppointmentDialog extends JDialog {
             this.dispose();
         }
         else {
-            collection.deleteAppointment(initialAppointment);
+            SchedulerTable.deleteDBTuple(schedulerEntry.getId());
             this.dispose();
         }
 
@@ -615,12 +614,19 @@ public class AppointmentDialog extends JDialog {
     private void saveAppointmentHandler() {
         // if this dialog creates a new Appointment, we save it else we actualize an old one
         if (isNewAppointment) {
-            saveAppointment();
+
+            String title = titleField.getText();
+            Repetition repetition = (Repetition) repetitionCBox.getSelectedItem();
+            int numberOfRepetitions = (int) numberOfRepetitionsSpinner.getValue();
+            String description = descriptionArea.getText();
+
+            SchedulerTable.newTuple(title, currentStartDate(), currentEndDate(), currentStartTime(), currentEndTime(),
+                                    repetition, numberOfRepetitions, description);
             this.dispose();
         }
         else {
-            Appointment appointment = getNewAppointment();
-            collection.actualizeAppointment(initialAppointment, appointment);
+            fillUserInputIntoEntry();
+            SchedulerTable.updateDB(schedulerEntry);
             this.dispose();
         }
 

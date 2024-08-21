@@ -1,5 +1,7 @@
 package Organizer.SubPrograms.SchedulerTab;
 
+import Organizer.Database.SchedulerTable;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -14,19 +16,15 @@ public class MonthPanel extends JPanel {
 
     private final Year yearOfThisPanel;
     private final Month monthOfThisPanel;
-    private final TreeSet<Appointment>[] appointmentsOfThisMonth;
-    private final Scheduler motherPane;
-    private final AppointmentCollection collection;
+    private final TreeSet<SchedulerEntry>[] appointmentsOfThisMonth;
 
     private final LinkedList<DayPanel> dayPanelList = new LinkedList<>();
 
-    public MonthPanel(Year year, Month month, TreeSet<Appointment>[] appointments, Scheduler motherPane, AppointmentCollection collection) {
+    public MonthPanel(Year year, Month month, Scheduler motherPane) {
 
         yearOfThisPanel = year;
         monthOfThisPanel = month;
-        appointmentsOfThisMonth = appointments;
-        this.motherPane = motherPane;
-        this.collection = collection;
+        this.appointmentsOfThisMonth = SchedulerTable.loadTuplesOfMonth(yearOfThisPanel, monthOfThisPanel);
 
         setBackground(Color.WHITE);
         setLayout(new GridBagLayout());
@@ -61,8 +59,8 @@ public class MonthPanel extends JPanel {
             gbc.gridy = y;
             gbc.gridx = x % 7;
             // instantiate all days of this month and hand it over the current appointments of that day
-            TreeSet<Appointment> appointmentSet = appointmentsOfThisMonth[daysToAdd];
-            DayPanel day = new DayPanel(firstDayOfMonth.plusDays(daysToAdd++), appointmentSet, motherPane, collection);
+            TreeSet<SchedulerEntry> schedulerEntrySet = appointmentsOfThisMonth[daysToAdd];
+            DayPanel day = new DayPanel(firstDayOfMonth.plusDays(daysToAdd++), schedulerEntrySet, motherPane);
             dayPanelList.add(day);
             add(day, gbc);
         }

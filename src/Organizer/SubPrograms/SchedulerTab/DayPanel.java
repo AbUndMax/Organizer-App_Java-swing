@@ -12,17 +12,16 @@ import java.util.TreeSet;
 public class DayPanel extends JPanel {
 
     private final LocalDate dateOfDay;
-    private TreeSet<Appointment> appointmentsOfTheDay;
-    private final DefaultListModel<Appointment> listModel = new DefaultListModel<>();
-    private final JList<Appointment> list = new JList<>(listModel);
+    private TreeSet<SchedulerEntry> appointmentsOfTheDay;
+    private final DefaultListModel<SchedulerEntry> listModel = new DefaultListModel<>();
+    private final JList<SchedulerEntry> list = new JList<>(listModel);
     private final Scheduler motherPane;
-    private final AppointmentCollection collection;
     private final ListSelectionListener listener = new ListSelectionListener() {
         @Override
         public void valueChanged(ListSelectionEvent e) {
-            JList<Appointment> list = (JList) e.getSource();
+            JList<SchedulerEntry> list = (JList) e.getSource();
             if (!e.getValueIsAdjusting() && list.getSelectedValue() != null) {
-                AppointmentDialog appointmentDialog = new AppointmentDialog(motherPane, collection, list.getSelectedValue());
+                AppointmentDialog appointmentDialog = new AppointmentDialog(motherPane, list.getSelectedValue());
                 appointmentDialog.setVisible(true);
 
                 list.clearSelection();
@@ -30,12 +29,11 @@ public class DayPanel extends JPanel {
         }
     };
 
-    public DayPanel(LocalDate date, TreeSet<Appointment> appointments, Scheduler motherPane, AppointmentCollection collection) {
+    public DayPanel(LocalDate date, TreeSet<SchedulerEntry> schedulerEntries, Scheduler motherPane) {
 
         dateOfDay = date;
-        appointmentsOfTheDay = appointments;
+        appointmentsOfTheDay = schedulerEntries;
         this.motherPane = motherPane;
-        this.collection = collection;
 
         setBackground(Color.WHITE);
         setBorder(LineBorder.createBlackLineBorder());
@@ -79,13 +77,13 @@ public class DayPanel extends JPanel {
     private void fillList() {
         // add all Appointments to the listModel
         if (appointmentsOfTheDay != null) {
-            for (Appointment appointment : appointmentsOfTheDay) {
-                listModel.addElement(appointment);
+            for (SchedulerEntry schedulerEntry : appointmentsOfTheDay) {
+                listModel.addElement(schedulerEntry);
             }
         }
     }
 
-    public void actualizeDayPane(TreeSet<Appointment> newAppointmentsOfTheDay) {
+    public void actualizeDayPane(TreeSet<SchedulerEntry> newAppointmentsOfTheDay) {
         list.removeListSelectionListener(listener);
         appointmentsOfTheDay = newAppointmentsOfTheDay;
         listModel.removeAllElements();
