@@ -16,7 +16,7 @@ public class MonthPanel extends JPanel {
 
     private final Year yearOfThisPanel;
     private final Month monthOfThisPanel;
-    private final TreeSet<SchedulerEntry>[] appointmentsOfThisMonth;
+    private TreeSet<SchedulerEntry>[] appointmentsOfThisMonth;
 
     private final LinkedList<DayPanel> dayPanelList = new LinkedList<>();
 
@@ -67,6 +67,7 @@ public class MonthPanel extends JPanel {
     }
 
     public void actualizeMonthPane() {
+        appointmentsOfThisMonth = SchedulerTable.loadTuplesOfMonth(yearOfThisPanel, monthOfThisPanel);
         int d = 0;
         for(DayPanel day : dayPanelList) {
             day.actualizeDayPane(appointmentsOfThisMonth[d++]);

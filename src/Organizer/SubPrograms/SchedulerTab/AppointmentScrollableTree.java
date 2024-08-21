@@ -75,7 +75,7 @@ public class AppointmentScrollableTree extends JScrollPane {
             root.add(yearNode);
 
             for (Map.Entry<Month, TreeMap<Integer, DefaultMutableTreeNode>> monthEntry : yearEntry.getValue().entrySet()) {
-                String monthName = getMonthName(monthEntry.getKey());
+                String monthName = monthEntry.getKey().toString();
                 DefaultMutableTreeNode monthNode = new DefaultMutableTreeNode(monthName);
                 yearNode.add(monthNode);
 
@@ -120,7 +120,7 @@ public class AppointmentScrollableTree extends JScrollPane {
     private void expandCurrentYearAndMonth() {
         LocalDate today = LocalDate.now();
         int currentYear = today.getYear();
-        String currentMonth = today.getMonth().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.getDefault());
+        String currentMonth = today.getMonth().toString();
 
         DefaultMutableTreeNode yearNode = findChildNode(root, currentYear);
         if (yearNode != null) {
