@@ -5,7 +5,7 @@
 <a href="https://github.com/AbUndMax/Organizer-App_Java-swing/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-blue" alt="LICENSE-Link">
 </a>
-<a href=https://github.com/AbUndMax/Organizer-App_Java-swing/releases/latest">
+<a href="https://github.com/AbUndMax/Organizer-App_Java-swing/releases/latest">
         <img src="https://img.shields.io/github/v/release/AbUndMax/Organizer-App_Java-swing?color=brightgreen">
 </a>
 <br>
