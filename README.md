@@ -1,6 +1,21 @@
-# Organizer-App_Java-swing
+<div align="center">
+<br>    
+<a href="https://github.com/AbUndMax/Organizer-App_Java-swing">
+        <img src="https://img.shields.io/badge/GitHub-Java__ArgsParser-blue?logo=github" alt="Repo-Link">
+    </a>
+    <a href="https://github.com/AbUndMax/Organizer-App_Java-swing/blob/main/LICENSE">
+        <img src="https://img.shields.io/badge/License-MIT-blue" alt="LICENSE-Link">
+    </a>
+    <a href=https://github.com/AbUndMax/Organizer-App_Java-swing/releases/latest">
+        <img src="https://img.shields.io/github/v/release/AbUndMax/Organizer-App_Java-swing?color=brightgreen">
+    </a>
+<br>
+<br>
+  <img src="Images/OrganizerAppLogo.jpg" alt="App Icon" width="150" height="150">
+<h1 style="margin-top: 0px;">Organizer App</h1>
+</div>
 
-The Organizer-Application consists of 4 subprograms:
+The Organizer-Application consists of 3 subprograms:
 
 <table>
     <tr>

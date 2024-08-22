@@ -7,6 +7,7 @@ out/
 /jars
 /BuildApp
 *.dmg
+Images/*.icns
 
 ### Eclipse ###
 .apt_generated
