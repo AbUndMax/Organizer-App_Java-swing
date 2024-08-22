@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
-public class SchedulerTable extends Database<SchedulerEntry> {
+public class SchedulerTable extends Database {
 
     public static LinkedList<SchedulerEntry> loadFullTable() {
         LinkedList<SchedulerEntry> sEntries = new LinkedList<>();

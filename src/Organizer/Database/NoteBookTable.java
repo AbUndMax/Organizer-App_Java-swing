@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
-public class NoteBookTable extends Database<NoteBookEntry> {
+public class NoteBookTable extends Database {
 
     public static LinkedList<NoteBookEntry> loadFullTable() {
         LinkedList<NoteBookEntry> nbEntries = new LinkedList<>();

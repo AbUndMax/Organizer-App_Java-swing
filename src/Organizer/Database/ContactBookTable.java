@@ -5,7 +5,7 @@ import Organizer.SubPrograms.ContactBookTab.ContactBookEntry;
 import java.sql.*;
 import java.util.LinkedList;
 
-public class ContactBookTable extends Database<ContactBookEntry> {
+public class ContactBookTable extends Database {
 
     public static LinkedList<ContactBookEntry> loadFullTable() {
         LinkedList<ContactBookEntry> abEntries = new LinkedList<>();

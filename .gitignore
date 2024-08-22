@@ -4,6 +4,9 @@ out/
 !**/src/test/**/out/
 .idea
 *.iml
+/jars
+/BuildApp
+*.dmg
 
 ### Eclipse ###
 .apt_generated
