@@ -1,5 +1,4 @@
 <div align="center">
-<br>    
 <a href="https://github.com/AbUndMax/Organizer-App_Java-swing">
         <img src="https://img.shields.io/badge/GitHub-Java__ArgsParser-blue?logo=github" alt="Repo-Link">
     </a>
