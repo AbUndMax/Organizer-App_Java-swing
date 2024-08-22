@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class NewNoteDialog extends JDialog {
 
-    private static final JPanel messagePane = new JPanel();
+    private final JPanel messagePane = new JPanel();
     private final JTextField getNoteName = new JTextField("name your note...");
     private final DefaultListModel<NoteBookEntry> listModel;
 
@@ -51,7 +51,6 @@ public class NewNoteDialog extends JDialog {
             NoteBookEntry newEntry = NoteBookTable.newDBTuple(getNoteName.getText(), "");
             listModel.addElement(newEntry);
         }
-
         this.dispose();
     }
 }
