@@ -62,8 +62,6 @@ public class Database {
         } catch (URISyntaxException e) {
             LOGGER.error(e.getMessage());
         }
-
-        System.out.println(dataBase.getAbsolutePath());
         return dataBase;
     }
 
@@ -71,8 +69,6 @@ public class Database {
 
         try {
             if (dataBase.createNewFile()) {
-
-                System.out.println("New file created");
 
                 try (Connection connection = connect();
                      Statement statement = connection.createStatement()) {
