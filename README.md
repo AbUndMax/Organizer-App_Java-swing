@@ -1,6 +1,6 @@
 <div align="center">
 <a href="https://github.com/AbUndMax/Organizer-App_Java-swing" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/GitHub-Java__ArgsParser-blue?logo=github" alt="Repo-Link">
+    <img src="https://img.shields.io/badge/GitHub-Organizer-App_Java-swing-blue?logo=github" alt="Repo-Link">
 </a>
 <a href="https://github.com/AbUndMax/Organizer-App_Java-swing/blob/main/LICENSE" style="text-decoration: none;">
     <img src="https://img.shields.io/badge/License-MIT-blue" alt="LICENSE-Link">
